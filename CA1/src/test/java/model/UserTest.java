@@ -1,5 +1,8 @@
+
 package model;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+//import static org.junit.Assert.fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,18 +13,18 @@ import exceptions.InvalidCreditRange;
 public class UserTest {
     private User user;
 
+
     @BeforeEach
     void setUp() {
         user = new User("testUser", "password123", "user@example.com", "2000-01-01", "123 Main St.");
         user.setCredit(100.0f);
     }
-
+    //testAddCredit
     @Test
     void testAddCreditValid() {
         assertDoesNotThrow(() -> user.addCredit(50.0f));
         assertEquals(150.0f, user.getCredit());
     }
-
     @Test
     void testAddCreditInvalid() {
         assertThrows(InvalidCreditRange.class, () -> user.addCredit(-50.0f));
@@ -29,17 +32,34 @@ public class UserTest {
     }
 
     @Test
+            void  testAddCreditZero()  {
+        assertThrows(InvalidCreditRange.class, () -> user.addCredit((0f)));
+        assertEquals(100.0f, user.getCredit());
+    }
+    //testWithdrawCredit
+
+    @Test
     void testWithdrawCreditValid() {
         assertDoesNotThrow(() -> user.withdrawCredit(50.0f));
         assertEquals(50.0f, user.getCredit());
     }
-
     @Test
     void testWithdrawCreditInsufficient() {
         assertThrows(InsufficientCredit.class, () -> user.withdrawCredit(150.0f));
         assertEquals(100.0f, user.getCredit());
     }
+    @Test
+    void testWithdrawCreditZero() {
+        assertThrows(InsufficientCredit.class, () -> user.withdrawCredit(0.0f));
+        assertEquals(100.0f, user.getCredit());
+    }
+    @Test
+    void testWithdrawCreditInvalid() {
+        assertThrows(InsufficientCredit.class, () -> user.withdrawCredit(-100.0f));
+        assertEquals(100.0f, user.getCredit());
+    }
 
+    //testAddBuyItem
     @Test
     void testAddBuyItem() {
         Commodity commodity = new Commodity();
@@ -49,7 +69,6 @@ public class UserTest {
         assertTrue(user.getBuyList().containsKey("1"));
         assertEquals(1, user.getBuyList().get("1"));
     }
-
     @Test
     void testAddBuyExistingItem() {
         Commodity commodity1 = new Commodity();
@@ -61,15 +80,22 @@ public class UserTest {
         assertTrue(user.getBuyList().containsKey("1"));
         assertEquals(2, user.getBuyList().get("1") );
     }
-
+    //testAddPurchasedItem
     @Test
-    void testAddPurchasedItem() {
+    void testAddPurchasedItemValid() {
         user.addPurchasedItem("2", 3);
 
         assertTrue(user.getPurchasedList().containsKey("2"));
         assertEquals(3, user.getPurchasedList().get("2"));
     }
-
+    @Test
+    void testAddPurchasedItemInvalid() {
+        //assertThrows(InvalidQuantity.class , ()->user.addPurchasedItem("2", -3));
+    }
+    @Test
+    void testAddPurchasedItemZero() {
+        //assertThrows(InvalidQuantity.class , ()->user.addPurchasedItem("2", 0));
+    }
     @Test
     void testAddPurchasedExistingItem() {
         user.addPurchasedItem("2", 3);
@@ -78,6 +104,7 @@ public class UserTest {
         assertEquals(4, user.getPurchasedList().get("2"));
     }
 
+    //testRemoveItemFromBuyList
     @Test
     void testRemoveItemFromBuyListValidWhichBecomeEmpty() {
         Commodity commodity = new Commodity();
@@ -97,7 +124,6 @@ public class UserTest {
 
         assertDoesNotThrow(() -> user.removeItemFromBuyList(commodity));
         assertEquals(1, user.getBuyList().get("3") );
-        //dif begirim???
     }
     @Test
     void testRemoveItemFromBuyListInvalid() {
@@ -107,5 +133,8 @@ public class UserTest {
         assertThrows(CommodityIsNotInBuyList.class, () -> user.removeItemFromBuyList(commodity));
         assertFalse(user.getBuyList().containsKey("4"));
     }
+
+
+
 }
 

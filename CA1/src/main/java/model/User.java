@@ -40,8 +40,11 @@ public class User {
         this.credit += amount;
     }
 
-    public void withdrawCredit(float amount) throws InsufficientCredit {
-        if (amount > this.credit)
+    public void withdrawCredit(float amount) throws InsufficientCredit  {
+        if (amount <= 0) {
+            throw  new InsufficientCredit();
+        }
+        if (amount >= this.credit)
             throw new InsufficientCredit();
 
         this.credit -= amount;
@@ -57,6 +60,9 @@ public class User {
     }
 
     public void addPurchasedItem(String id, int quantity) {
+        if (quantity <= 0 ) {
+            //throw  new InvalidQuantity();
+        }
         if (this.purchasedList.containsKey(id)) {
             int existingQuantity = this.purchasedList.get(id);
             this.purchasedList.put(id, existingQuantity + quantity);
