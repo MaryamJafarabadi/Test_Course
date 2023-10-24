@@ -71,4 +71,35 @@ public class CommentTest {
         assertEquals(2, comment.getLike());
         assertEquals(1, comment.getDislike());
     }
+
+    @Test
+    void testAddMultipleLikeVotes() {
+        int PreCountLikes = comment.getLike();
+        int PreCountDislike = comment.getDislike();
+        comment.addUserVote("user1", "like");
+        comment.addUserVote("user2", "like");
+        assertEquals(PreCountLikes + 2, comment.getLike());
+        assertEquals(PreCountDislike, comment.getDislike());
+    }
+
+    @Test
+    void testAddMultipleDislikeVotes() {
+        int PreCountLikes = comment.getLike();
+        int PreCountDislike = comment.getDislike();
+        comment.addUserVote("user1", "dislike");
+        comment.addUserVote("user2", "dislike");
+        assertEquals(PreCountLikes, comment.getLike());
+        assertEquals(PreCountDislike + 2, comment.getDislike());
+    }
+    @Test
+    void testChangeUserVote() {
+
+        int PreCountLikes = comment.getLike();
+        int PreCountDislike = comment.getDislike();
+        comment.addUserVote("user1", "like");
+        comment.addUserVote("user1", "dislike");
+        assertEquals(PreCountLikes, comment.getLike());
+        assertEquals(PreCountDislike + 1, comment.getDislike());
+
+    }
 }
