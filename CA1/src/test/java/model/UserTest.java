@@ -40,5 +40,72 @@ public class UserTest {
         assertEquals(100.0f, user.getCredit());
     }
 
+    @Test
+    void testAddBuyItem() {
+        Commodity commodity = new Commodity();
+        commodity.setId("1");
+        user.addBuyItem(commodity);
+
+        assertTrue(user.getBuyList().containsKey("1"));
+        assertEquals(1, user.getBuyList().get("1"));
+    }
+
+    @Test
+    void testAddBuyExistingItem() {
+        Commodity commodity1 = new Commodity();
+        Commodity commodity2 = new Commodity();
+        commodity1.setId("1");
+        commodity2.setId("1");
+        user.addBuyItem(commodity1);
+        user.addBuyItem(commodity2);
+        assertTrue(user.getBuyList().containsKey("1"));
+        assertEquals(2, user.getBuyList().get("1") );
+    }
+
+    @Test
+    void testAddPurchasedItem() {
+        user.addPurchasedItem("2", 3);
+
+        assertTrue(user.getPurchasedList().containsKey("2"));
+        assertEquals(3, user.getPurchasedList().get("2"));
+    }
+
+    @Test
+    void testAddPurchasedExistingItem() {
+        user.addPurchasedItem("2", 3);
+        user.addPurchasedItem("2", 1);
+        assertTrue(user.getPurchasedList().containsKey("2"));
+        assertEquals(4, user.getPurchasedList().get("2"));
+    }
+
+    @Test
+    void testRemoveItemFromBuyListValidWhichBecomeEmpty() {
+        Commodity commodity = new Commodity();
+        commodity.setId("3");
+        user.addBuyItem(commodity);
+
+        assertDoesNotThrow(() -> user.removeItemFromBuyList(commodity));
+        assertFalse(user.getBuyList().containsKey("3"));
+    }
+
+    @Test
+    void testRemoveItemFromBuyListValidWhichBecomeDecremented() {
+        Commodity commodity = new Commodity();
+        commodity.setId("3");
+        user.addBuyItem(commodity);
+        user.addBuyItem(commodity);
+
+        assertDoesNotThrow(() -> user.removeItemFromBuyList(commodity));
+        assertEquals(1, user.getBuyList().get("3") );
+        //dif begirim???
+    }
+    @Test
+    void testRemoveItemFromBuyListInvalid() {
+        Commodity commodity = new Commodity();
+        commodity.setId("4");
+
+        assertThrows(CommodityIsNotInBuyList.class, () -> user.removeItemFromBuyList(commodity));
+        assertFalse(user.getBuyList().containsKey("4"));
+    }
 }
 
