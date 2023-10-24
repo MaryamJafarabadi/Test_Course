@@ -83,23 +83,25 @@ public class UserTest {
     //testAddPurchasedItem
     @Test
     void testAddPurchasedItemValid() {
-        user.addPurchasedItem("2", 3);
+        assertDoesNotThrow(() -> user.addPurchasedItem("2", 3));
 
         assertTrue(user.getPurchasedList().containsKey("2"));
         assertEquals(3, user.getPurchasedList().get("2"));
     }
     @Test
     void testAddPurchasedItemInvalid() {
-        //assertThrows(InvalidQuantity.class , ()->user.addPurchasedItem("2", -3));
+        assertThrows(IllegalArgumentException.class , ()->user.addPurchasedItem("2", -3));
+        assertFalse(user.getPurchasedList().containsKey("2"));
     }
     @Test
     void testAddPurchasedItemZero() {
-        //assertThrows(InvalidQuantity.class , ()->user.addPurchasedItem("2", 0));
+        assertThrows(IllegalArgumentException.class , ()->user.addPurchasedItem("2", 0));
+        assertFalse(user.getPurchasedList().containsKey("2"));
     }
     @Test
     void testAddPurchasedExistingItem() {
-        user.addPurchasedItem("2", 3);
-        user.addPurchasedItem("2", 1);
+        assertDoesNotThrow(()->user.addPurchasedItem("2", 3)); ;
+        assertDoesNotThrow(()->user.addPurchasedItem("2", 1));
         assertTrue(user.getPurchasedList().containsKey("2"));
         assertEquals(4, user.getPurchasedList().get("2"));
     }
@@ -119,8 +121,8 @@ public class UserTest {
     void testRemoveItemFromBuyListValidWhichBecomeDecremented() {
         Commodity commodity = new Commodity();
         commodity.setId("3");
-        user.addBuyItem(commodity);
-        user.addBuyItem(commodity);
+        assertDoesNotThrow(() -> user.addBuyItem(commodity));
+        assertDoesNotThrow(()-> user.addBuyItem(commodity));
 
         assertDoesNotThrow(() -> user.removeItemFromBuyList(commodity));
         assertEquals(1, user.getBuyList().get("3") );

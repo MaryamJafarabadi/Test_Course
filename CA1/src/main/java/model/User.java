@@ -59,9 +59,9 @@ public class User {
             this.buyList.put(id, 1);
     }
 
-    public void addPurchasedItem(String id, int quantity) {
+    public void addPurchasedItem(String id, int quantity) throws IllegalArgumentException {
         if (quantity <= 0 ) {
-            //throw  new InvalidQuantity();
+            throw new IllegalArgumentException("Quantity must be positive!");
         }
         if (this.purchasedList.containsKey(id)) {
             int existingQuantity = this.purchasedList.get(id);
