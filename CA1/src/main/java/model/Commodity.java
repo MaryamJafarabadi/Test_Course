@@ -29,7 +29,10 @@ public class Commodity {
         this.inStock += amount;
     }
 
-    public void addRate(String username, int score) {
+    public void addRate(String username, int score) throws IllegalArgumentException {
+        if (score <1 || score > 10){
+            throw new IllegalArgumentException("Score is out of range.");
+        }
         userRate.put(username, score);
         this.calcRating();
     }
