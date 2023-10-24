@@ -102,4 +102,37 @@ public class CommentTest {
         assertEquals(PreCountDislike + 1, comment.getDislike());
 
     }
+    @Test
+    void testChangeUserVoteAfterSomeAddingVotesByOthers() {
+        int PreCountLikes = comment.getLike();
+        int PreCountDislike = comment.getDislike();
+        comment.addUserVote("user1", "like");
+        comment.addUserVote("user2", "dislike");
+        comment.addUserVote("user3", "dislike");
+        comment.addUserVote("user1", "dislike");
+        assertEquals(PreCountLikes, comment.getLike());
+        assertEquals(PreCountDislike + 3, comment.getDislike());
+    }
+    @Test
+    void testOneUserAddMultipleSameVotes() {
+        int PreCountLikes = comment.getLike();
+        int PreCountDislike = comment.getDislike();
+        comment.addUserVote("user1", "like");
+        comment.addUserVote("user1", "like");
+        comment.addUserVote("user1", "like");
+        assertEquals(PreCountLikes + 1, comment.getLike());
+        assertEquals(PreCountDislike, comment.getDislike());
+    }
+
+    @Test
+    void testOneUserAddMultipleSameVotesAndFinallyChangeHisVote() {
+        int PreCountLikes = comment.getLike();
+        int PreCountDislike = comment.getDislike();
+        comment.addUserVote("user1", "like");
+        comment.addUserVote("user1", "like");
+        comment.addUserVote("user1", "like");
+        comment.addUserVote("user1", "dislike");
+        assertEquals(PreCountLikes, comment.getLike());
+        assertEquals(PreCountDislike + 1, comment.getDislike());
+    }
 }
