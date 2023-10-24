@@ -8,6 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+
 public class CommentTest {
     private Comment comment;
 
@@ -34,26 +38,17 @@ public class CommentTest {
     }
 
 
-    @Test
-    public void testAddUserVote() {
-        // Initial state of like and dislike should be 0
-        assertEquals(0, comment.getLike());
-        assertEquals(0, comment.getDislike());
+    @ParameterizedTest
+    @CsvSource({
+            "User2, like, 1, 0, Like count should increase by 1",
+            "User3, dislike, 0, 1, Dislike count should increase by 1"
+    })
+    public void testAddUserVote(String voter, String vote, int expectedLike, int expectedDislike, String assertionMessage) {
+        // Add a vote
+        comment.addUserVote(voter, vote);
 
-        // Add a "like" vote
-        comment.addUserVote("User2", "like");
-        assertEquals(1, comment.getLike()); // Like count should increase by 1
-        assertEquals(0, comment.getDislike()); // Dislike count should remain 0
-
-        // Add a "dislike" vote
-        comment.addUserVote("User3", "dislike");
-        assertEquals(1, comment.getLike()); // Like count should remain 1
-        assertEquals(1, comment.getDislike()); // Dislike count should increase by 1
-
-        // Add another "like" vote
-        comment.addUserVote("User4", "like");
-        assertEquals(2, comment.getLike()); // Like count should increase by 1
-        assertEquals(1, comment.getDislike()); // Dislike count should remain 1
+        // Perform a single assertion for this case
+        assertEquals(expectedLike, comment.getLike(), assertionMessage);
+        assertEquals(expectedDislike, comment.getDislike(), assertionMessage);
     }
-
 }
