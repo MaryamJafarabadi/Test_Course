@@ -15,7 +15,7 @@ public class UserTest {
     private Commodity commodity;
     @BeforeEach
     void setUp() {
-        user = new User("testUser", "password123", "user@example.com", "2000-01-01", "123 Main St.");
+        user = new User("User", "1234", "userGmail@gmail.com", "2001-11-27", "Kargar Shomali");
         user.setCredit(100.0f);
         PreCredit = user.getCredit();
         commodity = new Commodity();

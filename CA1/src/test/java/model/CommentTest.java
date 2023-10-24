@@ -15,7 +15,7 @@ public class CommentTest {
     int PreCountDislike;
     @BeforeEach
     public void setUp() {
-        comment = new Comment(1, "user@example.com", "User1", 2, "This is a comment.");
+        comment = new Comment(1, "userGmail@gmail.com", "User1", 2, "This is a comment=)");
         PreCountLikes = comment.getLike();
         PreCountDislike = comment.getDislike();
     }
