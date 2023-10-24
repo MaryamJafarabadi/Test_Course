@@ -2,7 +2,6 @@
 package model;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-//import static org.junit.Assert.fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -78,15 +77,7 @@ public class UserTest {
 
         assertEquals(1, user.getBuyList().get("1"));
     }
-    @Test
-    void testAddBuyExistingItem_Existed() {
-        Commodity commodity2 = new Commodity();
-        commodity.setId("1");
-        commodity2.setId("1");
-        user.addBuyItem(commodity);
-        user.addBuyItem(commodity2);
-        assertTrue(user.getBuyList().containsKey("1"));
-    }
+
     @Test
     void testAddBuyExistingItem_Eq() {
         Commodity commodity2 = new Commodity();
@@ -94,7 +85,6 @@ public class UserTest {
         commodity2.setId("1");
         user.addBuyItem(commodity);
         user.addBuyItem(commodity2);
-        assertTrue(user.getBuyList().containsKey("1"));
         assertEquals(2, user.getBuyList().get("1") );
     }
     //testAddPurchasedItem
@@ -120,12 +110,7 @@ public class UserTest {
         assertThrows(IllegalArgumentException.class , ()->user.addPurchasedItem("2", 0));
         assertFalse(user.getPurchasedList().containsKey("2"));
     }
-    @Test
-    void testAddPurchasedExistingItem_Existed() {
-        assertDoesNotThrow(()->user.addPurchasedItem("2", 3));
-        assertDoesNotThrow(()->user.addPurchasedItem("2", 1));
-        assertTrue(user.getPurchasedList().containsKey("2"));
-    }
+
     @Test
     void testAddPurchasedExistingItem_Eq() {
         assertDoesNotThrow(()->user.addPurchasedItem("2", 3));
@@ -157,8 +142,5 @@ public class UserTest {
         assertThrows(CommodityIsNotInBuyList.class, () -> user.removeItemFromBuyList(commodity));
         assertFalse(user.getBuyList().containsKey("4"));
     }
-
-
-
 }
 
