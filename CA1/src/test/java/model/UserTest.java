@@ -101,7 +101,7 @@ public class UserTest {
     }
     @Test
     void testAddPurchasedExistingItem() {
-        assertDoesNotThrow(()->user.addPurchasedItem("2", 3)); ;
+        assertDoesNotThrow(()->user.addPurchasedItem("2", 3));
         assertDoesNotThrow(()->user.addPurchasedItem("2", 1));
         assertTrue(user.getPurchasedList().containsKey("2"));
         assertEquals(4, user.getPurchasedList().get("2"));
