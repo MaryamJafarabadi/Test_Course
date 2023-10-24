@@ -41,10 +41,10 @@ public class Comment {
         return dateFormat.format(currentDate);
     }
 
-    public void addUserVote(String userName, String vote) /*throws InvalidVote*/ {
-        /*if (vote != "like" && vote != "dislike" ) {
-            throw new InvalidVote();
-        }*/
+    public void addUserVote(String userName, String vote) throws IllegalArgumentException {
+        if (vote != "like" && vote != "dislike" ) {
+            throw new IllegalArgumentException("Vote must be dislike or like.");
+        }
 
         userVote.put(userName, vote);
 

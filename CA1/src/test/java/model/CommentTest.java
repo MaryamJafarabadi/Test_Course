@@ -21,16 +21,9 @@ public class CommentTest {
     }
     @Test
     public void testGetCurrentDate() {
-        // Get the current date using the getCurrentDate method
         String currentDate = comment.getCurrentDate();
-
-        // Create a SimpleDateFormat with the expected date format
         SimpleDateFormat expectedDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        // Format the current date with the expected format
         String expectedDate = expectedDateFormat.format(new Date());
-
-        // Assert that the current date matches the expected date
         assertEquals(expectedDate, currentDate);
     }
 
@@ -108,12 +101,10 @@ public class CommentTest {
     }
 
 
-    /*@Test
+    @Test
     void testAddVoteInvalid() {
-        assertThrows(InvalidVote.class, () -> comment.addUserVote("user1", "likee"));
+        assertThrows(IllegalArgumentException.class, () -> comment.addUserVote("user1", "likee"));
         assertEquals(PreCountDislike, comment.getDislike());
         assertEquals(PreCountLikes, comment.getLike());
-    }*/
-
-
+    }
 }
