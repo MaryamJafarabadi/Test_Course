@@ -1,11 +1,12 @@
 package model;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import exceptions.NotInStock;
-import exceptions.InvalidCreditRange;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
 
 public class CommodityTest {
     private Commodity commodity;
@@ -35,38 +36,28 @@ public class CommodityTest {
         assertDoesNotThrow(() -> commodity.addRate("User1", 4));
         assertEquals(4, commodity.getUserRate().get("User1"));
     }
-    @Test
-    void testAddRateValid() {
-        assertDoesNotThrow(() -> commodity.addRate("User1", 4));
-        assertEquals(3.5f, commodity.getRating());
-        // Initial rating was 3.0, so new rating is (3.0 + 4) / 2
-    }
-    @Test
-    void testAddRateValid_line1() {
-        assertDoesNotThrow(() -> commodity.addRate("User1", 1));
-        assertEquals((3+1)/2f, commodity.getRating());
-    }
-    @Test
-    void testAddRateValid_line10() {
-        assertDoesNotThrow(() -> commodity.addRate("User1", 10));
-        assertEquals((3+10)/2f, commodity.getRating());
-    }
-    @Test
-    void testAddRateOutOfRange_LessThan1() {
-        assertThrows(IllegalArgumentException.class, () -> commodity.addRate("user1", 0));
-        assertEquals(0.0f, commodity.getRating());
+
+
+    @ParameterizedTest //Happy Scenario
+    @CsvSource({
+            "4, 3.5", //    (3.0 + 4) / 2   ** 3 is initial rate!
+            "1, 2.0", //    (3+1)/2
+            "10, 6.5" //    (3+10)/2
+    })
+    void testAddRateValid(int rate, float expectedRating) {
+        assertDoesNotThrow(() -> commodity.addRate("User1", rate));
+        assertEquals(expectedRating, commodity.getRating());
     }
 
-    @Test
-    void testAddRateOutOfRange_MoreThan10() {
-        assertThrows(IllegalArgumentException.class, () -> commodity.addRate("user1", 11));
-        assertEquals(0.0f, commodity.getRating());
-    }
-
-    @Test
-    void testAddRateOutOfRangeNegative() {
-        assertThrows(IllegalArgumentException.class, () -> commodity.addRate("user1", -1));
-        assertEquals(0.0f, commodity.getRating());
+    @ParameterizedTest //Sad Scenario
+    @CsvSource({
+            "0, 0.0",
+            "11, 0.0",
+            "-1, 0.0"
+    })
+    void testAddRateOutOfRange(int rate, float expectedRating) {
+        assertThrows(IllegalArgumentException.class, () -> commodity.addRate("user1", rate));
+        assertEquals(expectedRating, commodity.getRating());
     }
 
     @Test
