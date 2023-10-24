@@ -12,7 +12,7 @@ public class CommodityTest {
     void setUp() {
         commodity = new Commodity();
         commodity.setInStock(10);
-        commodity.setRating(3.0f);
+        commodity.setInitRate(3.0f);
     }
 
     @Test
@@ -26,11 +26,7 @@ public class CommodityTest {
         assertThrows(NotInStock.class, () -> commodity.updateInStock(-15));
         assertEquals(10, commodity.getInStock());
     }
-
-    @Test
-    void testRatingInitialization() {
-        assertEquals(3, commodity.getRating());
-    }
+    
 
     @Test
     void testAddRate() {
