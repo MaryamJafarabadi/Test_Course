@@ -34,7 +34,7 @@ public class User {
     }
 
     public void addCredit(float amount) throws InvalidCreditRange {
-        if (amount < 0)
+        if (amount <= 0)
             throw new InvalidCreditRange();
 
         this.credit += amount;
