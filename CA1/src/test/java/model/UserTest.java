@@ -23,11 +23,11 @@ public class UserTest {
     }
     //testAddCredit
     @Test
-    void testAddCreditValid() {
-
+    void testAddCreditValid_NoExp() {
         assertDoesNotThrow(() -> user.addCredit(50.0f));
         assertEquals( PreCredit+ 50.0f, user.getCredit());
     }
+
     @Test
     void testAddCreditInvalid() {
         assertThrows(InvalidCreditRange.class, () -> user.addCredit(-50.0f));
@@ -64,15 +64,31 @@ public class UserTest {
 
     //testAddBuyItem
     @Test
-    void testAddBuyItem() {
+    void testAddBuyItem_Existed() {
         commodity.setId("1");
         user.addBuyItem(commodity);
 
         assertTrue(user.getBuyList().containsKey("1"));
+    }
+
+    @Test
+    void testAddBuyItem_Eq() {
+        commodity.setId("1");
+        user.addBuyItem(commodity);
+
         assertEquals(1, user.getBuyList().get("1"));
     }
     @Test
-    void testAddBuyExistingItem() {
+    void testAddBuyExistingItem_Existed() {
+        Commodity commodity2 = new Commodity();
+        commodity.setId("1");
+        commodity2.setId("1");
+        user.addBuyItem(commodity);
+        user.addBuyItem(commodity2);
+        assertTrue(user.getBuyList().containsKey("1"));
+    }
+    @Test
+    void testAddBuyExistingItem_Eq() {
         Commodity commodity2 = new Commodity();
         commodity.setId("1");
         commodity2.setId("1");
@@ -83,10 +99,15 @@ public class UserTest {
     }
     //testAddPurchasedItem
     @Test
-    void testAddPurchasedItemValid() {
+    void testAddPurchasedItemValid_Existed() {
         assertDoesNotThrow(() -> user.addPurchasedItem("2", 3));
 
         assertTrue(user.getPurchasedList().containsKey("2"));
+    }
+    @Test
+    void testAddPurchasedItemValid_Eq() {
+        assertDoesNotThrow(() -> user.addPurchasedItem("2", 3));
+
         assertEquals(3, user.getPurchasedList().get("2"));
     }
     @Test
@@ -100,13 +121,17 @@ public class UserTest {
         assertFalse(user.getPurchasedList().containsKey("2"));
     }
     @Test
-    void testAddPurchasedExistingItem() {
+    void testAddPurchasedExistingItem_Existed() {
         assertDoesNotThrow(()->user.addPurchasedItem("2", 3));
         assertDoesNotThrow(()->user.addPurchasedItem("2", 1));
         assertTrue(user.getPurchasedList().containsKey("2"));
+    }
+    @Test
+    void testAddPurchasedExistingItem_Eq() {
+        assertDoesNotThrow(()->user.addPurchasedItem("2", 3));
+        assertDoesNotThrow(()->user.addPurchasedItem("2", 1));
         assertEquals(4, user.getPurchasedList().get("2"));
     }
-
     //testRemoveItemFromBuyList
     @Test
     void testRemoveItemFromBuyListValidWhichBecomeEmpty() {
