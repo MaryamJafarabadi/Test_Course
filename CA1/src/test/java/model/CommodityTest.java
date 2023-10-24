@@ -17,14 +17,16 @@ public class CommodityTest {
 
     @Test
     void testUpdateInStockValid() {
+        int PreInStock = commodity.getInStock();
         assertDoesNotThrow(() -> commodity.updateInStock(5));
-        assertEquals(15, commodity.getInStock());
+        assertEquals(PreInStock + 5, commodity.getInStock());
     }
 
     @Test
     void testUpdateInStockInvalid() {
+        int PreInStock = commodity.getInStock();
         assertThrows(NotInStock.class, () -> commodity.updateInStock(-15));
-        assertEquals(10, commodity.getInStock());
+        assertEquals(PreInStock, commodity.getInStock());
     }
 
 
