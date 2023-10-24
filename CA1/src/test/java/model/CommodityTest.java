@@ -26,7 +26,7 @@ public class CommodityTest {
         assertThrows(NotInStock.class, () -> commodity.updateInStock(-15));
         assertEquals(10, commodity.getInStock());
     }
-    
+
 
     @Test
     void testAddRate() {
