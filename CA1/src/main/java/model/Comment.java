@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.InvalidVote;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,7 +41,11 @@ public class Comment {
         return dateFormat.format(currentDate);
     }
 
-    public void addUserVote(String userName, String vote) {
+    public void addUserVote(String userName, String vote) /*throws InvalidVote*/ {
+        /*if (vote != "like" && vote != "dislike" ) {
+            throw new InvalidVote();
+        }*/
+
         userVote.put(userName, vote);
 
         this.like = 0;

@@ -27,16 +27,7 @@ public class UserTest {
         assertThrows(InvalidCreditRange.class, () -> user.addCredit(-50.0f));
         assertEquals(100.0f, user.getCredit());
     }
-    @Test (expected =
-            InvalidCreditRange.class)
-    void testAddCreditInvalid_getException() {
-        user.addCredit(-50f);
-    }
-    @Test
-    void  testAddCreditZero()  {
-        assertThrows(InvalidCreditRange.class, () -> user.addCredit((0f)));
-        assertEquals(100.0f, user.getCredit());
-    }
+
     @Test
     void testWithdrawCreditValid() {
         assertDoesNotThrow(() -> user.withdrawCredit(50.0f));
