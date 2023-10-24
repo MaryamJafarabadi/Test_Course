@@ -21,9 +21,6 @@ public class CommentTest {
     }
     @Test
     public void testGetCurrentDate() {
-        // Create a Comment object
-        Comment comment = new Comment(1, "user@example.com", "User", 123, "This is a test comment");
-
         // Get the current date using the getCurrentDate method
         String currentDate = comment.getCurrentDate();
 
@@ -38,7 +35,7 @@ public class CommentTest {
     }
 
 
-    @ParameterizedTest
+    /*@ParameterizedTest
     @CsvSource({
             "User2, like, 1, 0, Like count should increase by 1",
             "User3, dislike, 0, 1, Dislike count should increase by 1"
@@ -50,5 +47,28 @@ public class CommentTest {
         // Perform a single assertion for this case
         assertEquals(expectedLike, comment.getLike(), assertionMessage);
         assertEquals(expectedDislike, comment.getDislike(), assertionMessage);
+    }*/
+
+    @Test
+    void testAddUserVoteLike() {
+        comment.addUserVote("User2", "like");
+        assertEquals(1, comment.getLike());
+        assertEquals(0, comment.getDislike());
+    }
+
+    @Test
+    void testAddUserVoteDislike() {
+        comment.addUserVote("User3", "dislike");
+        assertEquals(0, comment.getLike());
+        assertEquals(1, comment.getDislike());
+    }
+
+    @Test
+    void testAddMultipleVotes() {
+        comment.addUserVote("User2", "like");
+        comment.addUserVote("User3", "dislike");
+        comment.addUserVote("User4", "like");
+        assertEquals(2, comment.getLike());
+        assertEquals(1, comment.getDislike());
     }
 }
