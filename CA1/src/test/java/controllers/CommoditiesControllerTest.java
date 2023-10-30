@@ -200,7 +200,7 @@ public class CommoditiesControllerTest {
         assertEquals("Commodity does not exist.", response.getBody());
     }
 
-    @Test
+    @Test//check this test because i don't use new Exeption in the code
     void testRateCommodityIncorrectRange_checkStatus() throws NumberFormatException {
         Map<String, String> input = new HashMap<>();
         input.put("username", "F102M8");
