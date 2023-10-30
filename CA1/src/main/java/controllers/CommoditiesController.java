@@ -60,7 +60,8 @@ public class CommoditiesController {
         User user = null;
         try {
             user = baloot.getUserById(username);
-        } catch (NotExistentUser ignored) {
+        } catch (NotExistentUser e) { //it was ignored but we change it and throwed the exeption!
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
 
         Comment comment = new Comment(commentId, user.getEmail(), user.getUsername(), Integer.parseInt(id), commentText);
@@ -85,7 +86,7 @@ public class CommoditiesController {
             case "name" -> baloot.filterCommoditiesByName(searchValue);
             case "category" -> baloot.filterCommoditiesByCategory(searchValue);
             case "provider" -> baloot.filterCommoditiesByProviderName(searchValue);
-            default -> new ArrayList<>();
+            default -> new ArrayList<>();//????
         };
 
         return new ResponseEntity<>(commodities, HttpStatus.OK);
