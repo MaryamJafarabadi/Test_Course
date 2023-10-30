@@ -1,5 +1,5 @@
 //check the test for testAddCommodityComment because in it we don't really addComment(a method of baloot)
-//add test for search option not found!
+//add test for search option not found!  //done
 //parameterized the search options.
 package controllers;
 
@@ -102,10 +102,10 @@ public class CommoditiesControllerTest {
     @Test
     public void testAddCommodityCommentUserNotFound() throws NotExistentUser{
         Map<String, String> input = new HashMap<>();
-        input.put("username", "NotExistentUser");
+        input.put("username", "NotExistedUser");
         input.put("comment", "Nice!");
 
-        when(baloot.getUserById("NotExistentUser")).thenThrow(new NotExistentUser());
+        when(baloot.getUserById("NotExistedUser")).thenThrow(new NotExistentUser());
         ResponseEntity<String> response = commoditiesController.addCommodityComment("1", input);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -168,8 +168,44 @@ public class CommoditiesControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
-    // parameterized
-    // add test search option not found!
+    @Test
+    public void testSearchCommoditiesByOtherOptions() {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "OtherOptions");
+        input.put("searchValue", "commodityOtherOptions");
 
+        when(baloot.filterCommoditiesByName("commodityOtherOptions")).thenReturn(new ArrayList<>());
+
+        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.searchCommodities(input);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    // parameterized
+
+    @Test
+    public void testGetSuggestedCommodities() throws NotExistentCommodity {
+        Commodity commodity = new Commodity();
+        ArrayList<Commodity> suggestedCommodities = new ArrayList<>();
+        suggestedCommodities.add(new Commodity());
+
+        when(baloot.getCommodityById("1")).thenReturn(commodity);
+        when(baloot.suggestSimilarCommodities(commodity)).thenReturn(suggestedCommodities);
+
+        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.getSuggestedCommodities("1");
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    }
+
+
+    @Test
+    public void testGetSuggestedCommoditiesWithNotExistedCommodity() throws NotExistentCommodity {
+        when(baloot.getCommodityById("1")).thenThrow(new NotExistentCommodity());
+
+        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.getSuggestedCommodities("1");
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
 
 }
