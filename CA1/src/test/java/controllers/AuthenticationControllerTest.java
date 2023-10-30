@@ -14,6 +14,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import org.springframework.http.HttpStatus;
+import exceptions.UsernameAlreadyTaken;
+import model.User;
+
 
 public class AuthenticationControllerTest {
 
@@ -28,6 +31,7 @@ public class AuthenticationControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    //login
     @Test
     public void ResponseEntity_testLoginSuccessfully() {
         Map<String, String> input = new HashMap<>();
@@ -65,4 +69,35 @@ public class AuthenticationControllerTest {
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 
+    //signup:
+    @Test
+    void testSignupSuccess()  {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "F102M");
+        input.put("password", "123456789");
+        input.put("address", "Kargar Shomali");
+        input.put("birthDate", "01/12/2001");
+        input.put("email", "F102M.8@email.com");
+
+        ResponseEntity<String> response = authenticationController.signup(input);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    }
+
+    @Test
+    void testSignupUsernameAlreadyTaken() throws UsernameAlreadyTaken {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "F102M");
+        input.put("password", "123456789");
+        input.put("address", "Kargar Shomali");
+        input.put("birthDate", "01/12/2001");
+        input.put("email", "F102M.8@email.com");
+
+        doThrow(UsernameAlreadyTaken.class).when(baloot).addUser(any(User.class));
+
+        ResponseEntity<String> response = authenticationController.signup(input);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
 }
