@@ -33,7 +33,7 @@ public class AuthenticationControllerTest {
 
     //login
     @Test
-    public void ResponseEntity_testLoginSuccessfully() {
+    public void testLoginSuccessfully() {
         Map<String, String> input = new HashMap<>();
         input.put("username", "F102M8");
         input.put("password", "123456789");
@@ -44,7 +44,7 @@ public class AuthenticationControllerTest {
     }
 
     @Test
-    public void ResponseEntity_testLoginWithNonExistentUser() throws NotExistentUser, IncorrectPassword {
+    public void testLoginWithNonExistentUser() throws NotExistentUser, IncorrectPassword {
         Map<String, String> input = new HashMap<>();
         input.put("username", "notF102M8");
         input.put("password", "123456789");
@@ -57,7 +57,7 @@ public class AuthenticationControllerTest {
     }
 
     @Test
-    public void ResponseEntity_testLoginWithIncorrectPassword() throws NotExistentUser, IncorrectPassword {
+    public void testLoginWithIncorrectPassword() throws NotExistentUser, IncorrectPassword {
         Map<String, String> input = new HashMap<>();
         input.put("username", "F102M8");
         input.put("password", "123123123");
