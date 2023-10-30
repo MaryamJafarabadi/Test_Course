@@ -2,6 +2,7 @@ package controllers;
 
 import exceptions.IncorrectPassword;
 import exceptions.NotExistentUser;
+import exceptions.UsernameAlreadyTaken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -33,7 +34,7 @@ public class AuthenticationControllerTest {
 
     //login
     @Test
-    public void testLoginSuccessfully() {
+    public void testLoginSuccessfully_checkStateOfResponse() {
         Map<String, String> input = new HashMap<>();
         input.put("username", "F102M8");
         input.put("password", "123456789");
@@ -42,36 +43,103 @@ public class AuthenticationControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
+    @Test
+    public void testLoginSuccessfully_checkValueOfResponse() {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "F102M8");
+        input.put("password", "123456789");
+
+        ResponseEntity<String> response = authenticationController.login(input);
+
+        assertEquals(200, response.getStatusCodeValue());
+    }
+    @Test
+    public void testLoginSuccessfully_checkBodyOfResponse() {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "F102M8");
+        input.put("password", "123456789");
+
+        ResponseEntity<String> response = authenticationController.login(input);
+
+        assertEquals("login successfully!", response.getBody());
+    }
 
     @Test
-    public void testLoginWithNonExistentUser() throws NotExistentUser, IncorrectPassword {
+    public void testLoginWithNonExistentUser_checkStatusOfResponse() throws NotExistentUser, IncorrectPassword {
         Map<String, String> input = new HashMap<>();
         input.put("username", "notF102M8");
         input.put("password", "123456789");
 
-        doThrow(NotExistentUser.class).when(baloot).login(input.get("username"), input.get(("password")));
+        doThrow(new NotExistentUser()).when(baloot).login(input.get("username"), input.get(("password")));
 
         ResponseEntity<String> response = authenticationController.login(input);
 
         assertEquals(HttpStatus.NOT_FOUND , response.getStatusCode());
     }
+    @Test
+    public void testLoginWithNonExistentUser_checkValuesOfResponse() throws NotExistentUser, IncorrectPassword {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "notF102M8");
+        input.put("password", "123456789");
+
+        doThrow(new NotExistentUser()).when(baloot).login(input.get("username"), input.get(("password")));
+
+        ResponseEntity<String> response = authenticationController.login(input);
+
+        assertEquals(404 , response.getStatusCodeValue());
+    }
+    @Test
+    public void testLoginWithNonExistentUser_checkBodyOfResponse() throws NotExistentUser, IncorrectPassword {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "notF102M8");
+        input.put("password", "123456789");
+
+        doThrow(new NotExistentUser()).when(baloot).login(input.get("username"), input.get(("password")));
+
+        ResponseEntity<String> response = authenticationController.login(input);
+
+        assertEquals("User does not exist." , response.getBody());
+    }
 
     @Test
-    public void testLoginWithIncorrectPassword() throws NotExistentUser, IncorrectPassword {
+    public void testLoginWithIncorrectPassword_checkStatusOfResponse() throws NotExistentUser, IncorrectPassword {
         Map<String, String> input = new HashMap<>();
         input.put("username", "F102M8");
         input.put("password", "123123123");
 
-        doThrow(IncorrectPassword.class).when(baloot).login(input.get("username"), input.get(("password")));
+        doThrow(new IncorrectPassword()).when(baloot).login(input.get("username"), input.get(("password")));
 
         ResponseEntity<String> response = authenticationController.login(input);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
+    @Test
+    public void testLoginWithIncorrectPassword_checkValueOfResponse() throws NotExistentUser, IncorrectPassword {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "F102M8");
+        input.put("password", "123123123");
 
+        doThrow(new IncorrectPassword()).when(baloot).login(input.get("username"), input.get(("password")));
+
+        ResponseEntity<String> response = authenticationController.login(input);
+
+        assertEquals(401, response.getStatusCodeValue());
+    }
+    @Test
+    public void testLoginWithIncorrectPassword_checkBodyOfResponse() throws NotExistentUser, IncorrectPassword {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "F102M8");
+        input.put("password", "123123123");
+
+        doThrow(new IncorrectPassword()).when(baloot).login(input.get("username"), input.get(("password")));
+
+        ResponseEntity<String> response = authenticationController.login(input);
+
+        assertEquals("Incorrect password.", response.getBody());
+    }
     //signup:
     @Test
-    void testSignupSuccess()  {
+    void testSignupSuccess_checkStatusOfResponse()  {
         Map<String, String> input = new HashMap<>();
         input.put("username", "F102M");
         input.put("password", "123456789");
@@ -84,9 +152,8 @@ public class AuthenticationControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
     }
-
     @Test
-    void testSignupUsernameAlreadyTaken() throws UsernameAlreadyTaken {
+    void testSignupSuccess_checkValueOfResponse()  {
         Map<String, String> input = new HashMap<>();
         input.put("username", "F102M");
         input.put("password", "123456789");
@@ -94,10 +161,69 @@ public class AuthenticationControllerTest {
         input.put("birthDate", "01/12/2001");
         input.put("email", "F102M.8@email.com");
 
-        doThrow(UsernameAlreadyTaken.class).when(baloot).addUser(any(User.class));
+        ResponseEntity<String> response = authenticationController.signup(input);
+
+        assertEquals(200, response.getStatusCodeValue());
+
+    }
+    @Test
+    void testSignupSuccess_checkBodyOfResponse()  {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "F102M");
+        input.put("password", "123456789");
+        input.put("address", "Kargar Shomali");
+        input.put("birthDate", "01/12/2001");
+        input.put("email", "F102M.8@email.com");
+
+        ResponseEntity<String> response = authenticationController.signup(input);
+
+        assertEquals("signup successfully!", response.getBody());
+
+    }
+
+    @Test
+    void testSignupUsernameAlreadyTaken_checkStatusOfResponse() throws UsernameAlreadyTaken {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "F102M");
+        input.put("password", "123456789");
+        input.put("address", "Kargar Shomali");
+        input.put("birthDate", "01/12/2001");
+        input.put("email", "F102M.8@email.com");
+
+        doThrow(new UsernameAlreadyTaken()).when(baloot).addUser(any(User.class));
 
         ResponseEntity<String> response = authenticationController.signup(input);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+    @Test
+    void testSignupUsernameAlreadyTaken_checkValueOfResponse() throws UsernameAlreadyTaken {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "F102M");
+        input.put("password", "123456789");
+        input.put("address", "Kargar Shomali");
+        input.put("birthDate", "01/12/2001");
+        input.put("email", "F102M.8@email.com");
+
+        doThrow(new UsernameAlreadyTaken()).when(baloot).addUser(any(User.class));
+
+        ResponseEntity<String> response = authenticationController.signup(input);
+
+        assertEquals(400, response.getStatusCodeValue());
+    }
+    @Test
+    void testSignupUsernameAlreadyTaken_checkBodyOfResponse() throws UsernameAlreadyTaken {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "F102M");
+        input.put("password", "123456789");
+        input.put("address", "Kargar Shomali");
+        input.put("birthDate", "01/12/2001");
+        input.put("email", "F102M.8@email.com");
+
+        doThrow(new UsernameAlreadyTaken()).when(baloot).addUser(any(User.class));
+
+        ResponseEntity<String> response = authenticationController.signup(input);
+
+        assertEquals("The username is already taken.", response.getBody());
     }
 }
