@@ -1,6 +1,6 @@
 //check the test for testAddCommodityComment because in it we don't really addComment(a method of baloot)
 //add test for search option not found!  //done
-//parameterized the search options.
+//parameterized the search options. //done
 package controllers;
 
 import model.Comment;
@@ -22,6 +22,9 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class CommoditiesControllerTest {
 
@@ -157,7 +160,78 @@ public class CommoditiesControllerTest {
         assertEquals("rate added successfully!", response.getBody());
     }
 
-    //add more tests for not successful paths................
+    @Test
+    void testRateCommodityNotExistentCommodity_checkStatus() throws NotExistentCommodity {
+        Map<String, String> input = new HashMap<>();
+        input.put("rate", "5");
+        input.put("username", "F102M8");
+
+        when(baloot.getCommodityById("1")).thenThrow(new NotExistentCommodity());
+
+        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void testRateCommodityNotExistentCommodity_checkValue() throws NotExistentCommodity {
+        Map<String, String> input = new HashMap<>();
+        input.put("rate", "5");
+        input.put("username", "F102M8");
+
+        when(baloot.getCommodityById("1")).thenThrow(new NotExistentCommodity());
+
+        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+
+        assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    void testRateCommodityNotExistentCommodity_checkBody() throws NotExistentCommodity {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "F102M8");
+        input.put("rate", "5");
+
+
+        when(baloot.getCommodityById("1")).thenThrow(new NotExistentCommodity());
+
+        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+
+        assertEquals("Commodity does not exist.", response.getBody());
+    }
+
+    @Test
+    void testRateCommodityIncorrectRange_checkStatus() throws NumberFormatException {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "F102M8");
+        input.put("rate", "1.5");
+
+        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    void testRateCommodityIncorrectRange_checkValue() throws NumberFormatException {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "F102M8");
+        input.put("rate", "1.5");
+
+        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+
+        assertEquals(400, response.getStatusCodeValue());
+    }
+
+    @Test
+    void testRateCommodityIncorrectRange_checkBody() throws NumberFormatException {
+        Map<String, String> input = new HashMap<>();
+        input.put("username", "F102M8");
+        input.put("rate", "1.5");
+
+        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+
+        assertEquals("For input string: \"1.5\"", response.getBody());///??????????????????
+    }
 
     @Test
     public void testAddCommodityComment_checkStatus() throws NotExistentUser {
@@ -258,52 +332,38 @@ public class CommoditiesControllerTest {
         assertEquals(200, response.getStatusCodeValue());
     }
 
-
-    @Test
-    public void testSearchCommoditiesByName() {
+    @ParameterizedTest //get body!
+    @ValueSource(strings = { "name", "category", "provider" })
+    public void testSearchCommodities_checkStatus(String searchOption) {
         ArrayList<Commodity> commodities = new ArrayList<>();
         commodities.add(new Commodity());
 
         Map<String, String> input = new HashMap<>();
-        input.put("searchOption", "name");
-        input.put("searchValue", "commodityName");
+        input.put("searchOption", searchOption);
+        input.put("searchValue", "commodityValue");
 
-        when(baloot.filterCommoditiesByName("commodityName")).thenReturn(commodities);
-
-        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.searchCommodities(input);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
-    @Test
-    public void testSearchCommoditiesByCategory() {
-        ArrayList<Commodity> commodities = new ArrayList<>();
-        commodities.add(new Commodity());
-
-        Map<String, String> input = new HashMap<>();
-        input.put("searchOption", "category");
-        input.put("searchValue", "commodityCategory");
-
-        when(baloot.filterCommoditiesByName("commodityCategory")).thenReturn(commodities);
+        when(baloot.filterCommoditiesByName("commodityValue")).thenReturn(commodities);
 
         ResponseEntity<ArrayList<Commodity>> response = commoditiesController.searchCommodities(input);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
-    @Test
-    public void testSearchCommoditiesByProvider() {
+    @ParameterizedTest
+    @ValueSource(strings = { "name", "category", "provider" })
+    public void testSearchCommodities_checkValue(String searchOption) {
         ArrayList<Commodity> commodities = new ArrayList<>();
         commodities.add(new Commodity());
 
         Map<String, String> input = new HashMap<>();
-        input.put("searchOption", "provider");
-        input.put("searchValue", "commodityProvider");
+        input.put("searchOption", searchOption);
+        input.put("searchValue", "commodityValue");
 
-        when(baloot.filterCommoditiesByName("commodityProvider")).thenReturn(commodities);
+        when(baloot.filterCommoditiesByName("commodityValue")).thenReturn(commodities);
 
         ResponseEntity<ArrayList<Commodity>> response = commoditiesController.searchCommodities(input);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(200, response.getStatusCodeValue());
     }
 
     @Test
@@ -319,8 +379,6 @@ public class CommoditiesControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
-    // parameterized
-
     @Test //get body!
     public void testGetSuggestedCommodities_checkStatus() throws NotExistentCommodity {
         Commodity commodity = new Commodity();
@@ -333,7 +391,6 @@ public class CommoditiesControllerTest {
         ResponseEntity<ArrayList<Commodity>> response = commoditiesController.getSuggestedCommodities("1");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-
     }
 
     @Test

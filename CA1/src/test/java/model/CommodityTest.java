@@ -56,14 +56,14 @@ public class CommodityTest {
             "-1, 0.0"
     })
     void testAddRateOutOfRange(int rate, float expectedRating) {
-        assertThrows(IllegalArgumentException.class, () -> commodity.addRate("user1", rate));
+        assertThrows(NumberFormatException.class, () -> commodity.addRate("user1", rate));
         assertEquals(expectedRating, commodity.getRating());
     }
 
     @Test
     void testAddRateOutOfRangeAfterAddingOneValidScore() { //because I want to rating be changed.
         assertDoesNotThrow(() -> commodity.addRate("User1", 4));
-        assertThrows(IllegalArgumentException.class, () -> commodity.addRate("user1", -1));
+        assertThrows(NumberFormatException.class, () -> commodity.addRate("user1", -1));
         assertEquals(3.5f, commodity.getRating());
     }
 
