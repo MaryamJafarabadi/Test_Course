@@ -1,5 +1,6 @@
 //check the test for testAddCommodityComment because in it we don't really addComment(a method of baloot)
-
+//add test for search option not found!
+//parameterized the search options.
 package controllers;
 
 import model.Comment;
@@ -120,4 +121,55 @@ public class CommoditiesControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
+    @Test
+    public void testSearchCommoditiesByName() {
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        commodities.add(new Commodity());
+
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "name");
+        input.put("searchValue", "commodityName");
+
+        when(baloot.filterCommoditiesByName("commodityName")).thenReturn(commodities);
+
+        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.searchCommodities(input);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+    @Test
+    public void testSearchCommoditiesByCategory() {
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        commodities.add(new Commodity());
+
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "category");
+        input.put("searchValue", "commodityCategory");
+
+        when(baloot.filterCommoditiesByName("commodityCategory")).thenReturn(commodities);
+
+        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.searchCommodities(input);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void testSearchCommoditiesByProvider() {
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        commodities.add(new Commodity());
+
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "provider");
+        input.put("searchValue", "commodityProvider");
+
+        when(baloot.filterCommoditiesByName("commodityProvider")).thenReturn(commodities);
+
+        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.searchCommodities(input);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    // parameterized
+    // add test search option not found!
+
+
 }
