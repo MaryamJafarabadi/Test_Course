@@ -366,8 +366,8 @@ public class CommoditiesControllerTest {
         assertEquals(200, response.getStatusCodeValue());
     }
 
-    @Test
-    public void testSearchCommoditiesByOtherOptions() {
+    @Test //get body!
+    public void testSearchCommoditiesByOtherOptions_checkStatus() {
         Map<String, String> input = new HashMap<>();
         input.put("searchOption", "OtherOptions");
         input.put("searchValue", "commodityOtherOptions");
@@ -377,6 +377,19 @@ public class CommoditiesControllerTest {
         ResponseEntity<ArrayList<Commodity>> response = commoditiesController.searchCommodities(input);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void testSearchCommoditiesByOtherOptions_checkValue() {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "OtherOptions");
+        input.put("searchValue", "commodityOtherOptions");
+
+        when(baloot.filterCommoditiesByName("commodityOtherOptions")).thenReturn(new ArrayList<>());
+
+        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.searchCommodities(input);
+
+        assertEquals(200, response.getStatusCodeValue());
     }
 
     @Test //get body!
