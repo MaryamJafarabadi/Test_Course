@@ -63,6 +63,19 @@ public class CommoditiesControllerTest {
         ResponseEntity<ArrayList<Commodity>> response = commoditiesController.getCommodities();
 
         assertEquals(200, response.getStatusCodeValue());
+
+    }
+
+    @Test
+    public void testGetCommodities_checkBody() {
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        commodities.add(new Commodity());
+        when(baloot.getCommodities()).thenReturn(commodities);
+
+        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.getCommodities();
+
+        assertEquals(commodities, response.getBody());
+
     }
 
     @Test
@@ -336,7 +349,19 @@ public class CommoditiesControllerTest {
         assertEquals(200, response.getStatusCodeValue());
     }
 
-    @ParameterizedTest //get body!
+    @Test
+    public void testGetCommodityComment_checkBody() {
+        ArrayList<Comment> comments = new ArrayList<>();
+        comments.add(new Comment());
+
+        when(baloot.getCommentsForCommodity(Integer.parseInt(commodity_ID))).thenReturn(comments);
+
+        ResponseEntity<ArrayList<Comment>> response = commoditiesController.getCommodityComment(commodity_ID);
+
+        assertEquals(comments, response.getBody());
+    }
+
+    @ParameterizedTest //get body!///////////////////////
     @ValueSource(strings = { "name", "category", "provider" })
     public void testSearchCommodities_checkStatus(String searchOption) {
         ArrayList<Commodity> commodities = new ArrayList<>();
@@ -370,6 +395,8 @@ public class CommoditiesControllerTest {
         assertEquals(200, response.getStatusCodeValue());
     }
 
+
+
     @Test //get body!
     public void testSearchCommoditiesByOtherOptions_checkStatus() {
         Map<String, String> input = new HashMap<>();
@@ -394,6 +421,19 @@ public class CommoditiesControllerTest {
         ResponseEntity<ArrayList<Commodity>> response = commoditiesController.searchCommodities(input);
 
         assertEquals(200, response.getStatusCodeValue());
+    }
+
+    @Test
+    public void testSearchCommoditiesByOtherOptions_checkBody() {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "OtherOptions");
+        input.put("searchValue", "commodityOtherOptions");
+
+        when(baloot.filterCommoditiesByName("commodityOtherOptions")).thenReturn(new ArrayList<>());
+
+        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.searchCommodities(input);
+
+        assertEquals(new ArrayList<>(), response.getBody());
     }
 
     @Test //get body!
@@ -424,8 +464,21 @@ public class CommoditiesControllerTest {
         assertEquals(200, response.getStatusCodeValue());
     }
 
+    @Test
+    public void testGetSuggestedCommodities_checkBody() throws NotExistentCommodity {
+        Commodity commodity = new Commodity();
+        ArrayList<Commodity> suggestedCommodities = new ArrayList<>();
+        suggestedCommodities.add(new Commodity());
 
-    @Test //get body!
+        when(baloot.getCommodityById(commodity_ID)).thenReturn(commodity);
+        when(baloot.suggestSimilarCommodities(commodity)).thenReturn(suggestedCommodities);
+
+        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.getSuggestedCommodities(commodity_ID);
+
+        assertEquals(suggestedCommodities, response.getBody());
+    }
+
+    @Test //get body!//////////////////
     public void testGetSuggestedCommoditiesWithNotExistedCommodity_checkStatus() throws NotExistentCommodity {
         when(baloot.getCommodityById(commodity_ID)).thenThrow(new NotExistentCommodity());
 
