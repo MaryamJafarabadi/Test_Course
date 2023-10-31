@@ -27,17 +27,20 @@ public class AuthenticationControllerTest {
     @Mock
     private Baloot baloot;
 
+    Map<String, String> input;
+
     @BeforeEach
     public void setup() {
+
         MockitoAnnotations.openMocks(this);
+        input = new HashMap<>();
+        input.put("username", "F102M8");
+        input.put("password", "123456789");
     }
 
     //login
     @Test
     public void testLoginSuccessfully_checkStateOfResponse() {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "F102M8");
-        input.put("password", "123456789");
 
         ResponseEntity<String> response = authenticationController.login(input);
 
@@ -45,9 +48,6 @@ public class AuthenticationControllerTest {
     }
     @Test
     public void testLoginSuccessfully_checkValueOfResponse() {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "F102M8");
-        input.put("password", "123456789");
 
         ResponseEntity<String> response = authenticationController.login(input);
 
@@ -55,9 +55,6 @@ public class AuthenticationControllerTest {
     }
     @Test
     public void testLoginSuccessfully_checkBodyOfResponse() {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "F102M8");
-        input.put("password", "123456789");
 
         ResponseEntity<String> response = authenticationController.login(input);
 
@@ -66,9 +63,6 @@ public class AuthenticationControllerTest {
 
     @Test
     public void testLoginWithNonExistentUser_checkStatusOfResponse() throws NotExistentUser, IncorrectPassword {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "notF102M8");
-        input.put("password", "123456789");
 
         doThrow(new NotExistentUser()).when(baloot).login(input.get("username"), input.get(("password")));
 
@@ -78,9 +72,6 @@ public class AuthenticationControllerTest {
     }
     @Test
     public void testLoginWithNonExistentUser_checkValuesOfResponse() throws NotExistentUser, IncorrectPassword {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "notF102M8");
-        input.put("password", "123456789");
 
         doThrow(new NotExistentUser()).when(baloot).login(input.get("username"), input.get(("password")));
 
@@ -90,9 +81,6 @@ public class AuthenticationControllerTest {
     }
     @Test
     public void testLoginWithNonExistentUser_checkBodyOfResponse() throws NotExistentUser, IncorrectPassword {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "notF102M8");
-        input.put("password", "123456789");
 
         doThrow(new NotExistentUser()).when(baloot).login(input.get("username"), input.get(("password")));
 
@@ -103,9 +91,6 @@ public class AuthenticationControllerTest {
 
     @Test
     public void testLoginWithIncorrectPassword_checkStatusOfResponse() throws NotExistentUser, IncorrectPassword {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "F102M8");
-        input.put("password", "123123123");
 
         doThrow(new IncorrectPassword()).when(baloot).login(input.get("username"), input.get(("password")));
 
@@ -115,9 +100,6 @@ public class AuthenticationControllerTest {
     }
     @Test
     public void testLoginWithIncorrectPassword_checkValueOfResponse() throws NotExistentUser, IncorrectPassword {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "F102M8");
-        input.put("password", "123123123");
 
         doThrow(new IncorrectPassword()).when(baloot).login(input.get("username"), input.get(("password")));
 
@@ -127,9 +109,6 @@ public class AuthenticationControllerTest {
     }
     @Test
     public void testLoginWithIncorrectPassword_checkBodyOfResponse() throws NotExistentUser, IncorrectPassword {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "F102M8");
-        input.put("password", "123123123");
 
         doThrow(new IncorrectPassword()).when(baloot).login(input.get("username"), input.get(("password")));
 
@@ -140,9 +119,6 @@ public class AuthenticationControllerTest {
     //signup:
     @Test
     void testSignupSuccess_checkStatusOfResponse()  {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "F102M");
-        input.put("password", "123456789");
         input.put("address", "Kargar Shomali");
         input.put("birthDate", "01/12/2001");
         input.put("email", "F102M.8@email.com");
@@ -154,9 +130,6 @@ public class AuthenticationControllerTest {
     }
     @Test
     void testSignupSuccess_checkValueOfResponse()  {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "F102M");
-        input.put("password", "123456789");
         input.put("address", "Kargar Shomali");
         input.put("birthDate", "01/12/2001");
         input.put("email", "F102M.8@email.com");
@@ -168,9 +141,6 @@ public class AuthenticationControllerTest {
     }
     @Test
     void testSignupSuccess_checkBodyOfResponse()  {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "F102M");
-        input.put("password", "123456789");
         input.put("address", "Kargar Shomali");
         input.put("birthDate", "01/12/2001");
         input.put("email", "F102M.8@email.com");
@@ -183,9 +153,6 @@ public class AuthenticationControllerTest {
 
     @Test
     void testSignupUsernameAlreadyTaken_checkStatusOfResponse() throws UsernameAlreadyTaken {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "F102M");
-        input.put("password", "123456789");
         input.put("address", "Kargar Shomali");
         input.put("birthDate", "01/12/2001");
         input.put("email", "F102M.8@email.com");
@@ -198,9 +165,6 @@ public class AuthenticationControllerTest {
     }
     @Test
     void testSignupUsernameAlreadyTaken_checkValueOfResponse() throws UsernameAlreadyTaken {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "F102M");
-        input.put("password", "123456789");
         input.put("address", "Kargar Shomali");
         input.put("birthDate", "01/12/2001");
         input.put("email", "F102M.8@email.com");
@@ -213,9 +177,6 @@ public class AuthenticationControllerTest {
     }
     @Test
     void testSignupUsernameAlreadyTaken_checkBodyOfResponse() throws UsernameAlreadyTaken {
-        Map<String, String> input = new HashMap<>();
-        input.put("username", "F102M");
-        input.put("password", "123456789");
         input.put("address", "Kargar Shomali");
         input.put("birthDate", "01/12/2001");
         input.put("email", "F102M.8@email.com");

@@ -1,6 +1,4 @@
 //check the test for testAddCommodityComment because in it, we don't really addComment(a method of Baloot)
-//add test for search option not found!  //done
-//parameterized the search options. //done
 package controllers;
 
 import model.Comment;
@@ -132,7 +130,7 @@ public class CommoditiesControllerTest {
 
         ResponseEntity<Commodity> response = commoditiesController.getCommodity(commodity_ID);
 
-        assertNull(response.getBody());//////////////////
+        assertNull(response.getBody());//
     }
 
     @Test
@@ -256,7 +254,7 @@ public class CommoditiesControllerTest {
         input.put("username", "F102M8");
         input.put("comment", "Nice!");
 
-        when(baloot.generateCommentId()).thenReturn(1);/////////////
+        when(baloot.generateCommentId()).thenReturn(1);//
         when(baloot.getUserById("F102M8")).thenReturn(new model.User());
 
         ResponseEntity<String> response = commoditiesController.addCommodityComment(commodity_ID, input);
@@ -361,7 +359,7 @@ public class CommoditiesControllerTest {
         assertEquals(comments, response.getBody());
     }
 
-    @ParameterizedTest //get body!///////////////////////
+    @ParameterizedTest //get body!
     @ValueSource(strings = { "name", "category", "provider" })
     public void testSearchCommodities_checkStatus(String searchOption) {
         ArrayList<Commodity> commodities = new ArrayList<>();
