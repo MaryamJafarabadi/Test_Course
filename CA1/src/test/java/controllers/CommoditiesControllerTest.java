@@ -23,6 +23,7 @@ import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class CommoditiesControllerTest {
 
@@ -31,6 +32,8 @@ public class CommoditiesControllerTest {
 
     @Mock
     private Baloot baloot;
+
+
 
     String commodity_ID;
 
@@ -215,38 +218,55 @@ public class CommoditiesControllerTest {
         assertEquals("Commodity does not exist.", response.getBody());
     }
 
-    @Test//check this test because I don't use new Exception in the code
-    void testRateCommodityIncorrectRange_checkStatus() throws NumberFormatException {
+    @ParameterizedTest
+    @CsvSource({
+            "F102M8, 11",
+            "F102M8, -2"
+    })
+    void testRateCommodityIncorrectRange_checkStatus(String username, String rate) throws NumberFormatException,NotExistentCommodity {
         Map<String, String> input = new HashMap<>();
         input.put("username", "F102M8");
-        input.put("rate", "1.5");
-
+        input.put("rate", "11");
+        Commodity commodity = mock(Commodity.class);
+        doThrow(NumberFormatException.class).when(commodity).addRate(input.get("username"), Integer.parseInt(input.get("rate")));
+        when(baloot.getCommodityById(commodity_ID)).thenReturn(new Commodity());
         ResponseEntity<String> response = commoditiesController.rateCommodity(commodity_ID, input);
-
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
-    @Test
-    void testRateCommodityIncorrectRange_checkValue() throws NumberFormatException {
+    @ParameterizedTest
+    @CsvSource({
+            "F102M8, 11",
+            "F102M8, -2"
+    })
+    void testRateCommodityIncorrectRange_checkValue(String username, String rate) throws NumberFormatException , NotExistentCommodity{
         Map<String, String> input = new HashMap<>();
         input.put("username", "F102M8");
-        input.put("rate", "1.5");
-
+        input.put("rate", "11");
+        Commodity commodity = mock(Commodity.class);
+        doThrow(NumberFormatException.class).when(commodity).addRate(input.get("username"), Integer.parseInt(input.get("rate")));
+        when(baloot.getCommodityById(commodity_ID)).thenReturn(new Commodity());
         ResponseEntity<String> response = commoditiesController.rateCommodity(commodity_ID, input);
-
         assertEquals(400, response.getStatusCodeValue());
     }
 
-    @Test
-    void testRateCommodityIncorrectRange_checkBody() throws NumberFormatException {
+    @ParameterizedTest
+    @CsvSource({
+            "F102M8, 11",
+            "F102M8, -2"
+    })
+    void testRateCommodityIncorrectRange_checkBody(String username, String rate) throws NumberFormatException, NotExistentCommodity {
         Map<String, String> input = new HashMap<>();
-        input.put("username", "F102M8");
-        input.put("rate", "1.5");
-
+        input.put("username", username);
+        input.put("rate", rate);
+        Commodity commodity = mock(Commodity.class);
+        doThrow(NumberFormatException.class).when(commodity).addRate(input.get("username"), Integer.parseInt(input.get("rate")));
+        when(baloot.getCommodityById(commodity_ID)).thenReturn(new Commodity());
         ResponseEntity<String> response = commoditiesController.rateCommodity(commodity_ID, input);
 
-        assertEquals("For input string: \"1.5\"", response.getBody());///??????????????????
+        assertNull(response.getBody());//
     }
+
 
     @Test
     public void testAddCommodityComment_checkStatus() throws NotExistentUser {
