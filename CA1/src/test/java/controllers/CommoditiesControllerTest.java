@@ -1,4 +1,4 @@
-//check the test for testAddCommodityComment because in it, we don't really addComment(a method of Baloot)
+
 package controllers;
 
 import model.Comment;
@@ -44,7 +44,7 @@ public class CommoditiesControllerTest {
     }
 
 
-    @Test ////////////get body!
+    @Test
     public void testGetCommodities_checkStatus() {
         ArrayList<Commodity> commodities = new ArrayList<>();
         commodities.add(new Commodity());
@@ -133,7 +133,7 @@ public class CommoditiesControllerTest {
 
         ResponseEntity<Commodity> response = commoditiesController.getCommodity(commodity_ID);
 
-        assertNull(response.getBody());//
+        assertNull(response.getBody());
     }
 
     @Test
@@ -264,7 +264,7 @@ public class CommoditiesControllerTest {
         when(baloot.getCommodityById(commodity_ID)).thenReturn(new Commodity());
         ResponseEntity<String> response = commoditiesController.rateCommodity(commodity_ID, input);
 
-        assertNull(response.getBody());//
+        assertNull(response.getBody());
     }
 
 
@@ -274,7 +274,7 @@ public class CommoditiesControllerTest {
         input.put("username", "F102M8");
         input.put("comment", "Nice!");
 
-        when(baloot.generateCommentId()).thenReturn(1);//
+        when(baloot.generateCommentId()).thenReturn(1);
         when(baloot.getUserById("F102M8")).thenReturn(new model.User());
 
         ResponseEntity<String> response = commoditiesController.addCommodityComment(commodity_ID, input);
@@ -343,7 +343,7 @@ public class CommoditiesControllerTest {
         assertEquals("User does not exist.", response.getBody());
     }
 
-    @Test //get body!
+    @Test
     public void testGetCommodityComment_checkStatus() {
         ArrayList<Comment> comments = new ArrayList<>();
         comments.add(new Comment());
@@ -379,7 +379,7 @@ public class CommoditiesControllerTest {
         assertEquals(comments, response.getBody());
     }
 
-    @ParameterizedTest //get body!
+    @ParameterizedTest
     @ValueSource(strings = { "name", "category", "provider" })
     public void testSearchCommodities_checkStatus(String searchOption) {
         ArrayList<Commodity> commodities = new ArrayList<>();
@@ -415,7 +415,7 @@ public class CommoditiesControllerTest {
 
 
 
-    @Test //get body!
+    @Test
     public void testSearchCommoditiesByOtherOptions_checkStatus() {
         Map<String, String> input = new HashMap<>();
         input.put("searchOption", "OtherOptions");
@@ -454,7 +454,7 @@ public class CommoditiesControllerTest {
         assertEquals(new ArrayList<>(), response.getBody());
     }
 
-    @Test //get body!
+    @Test
     public void testGetSuggestedCommodities_checkStatus() throws NotExistentCommodity {
         Commodity commodity = new Commodity();
         ArrayList<Commodity> suggestedCommodities = new ArrayList<>();
@@ -496,7 +496,7 @@ public class CommoditiesControllerTest {
         assertEquals(suggestedCommodities, response.getBody());
     }
 
-    @Test //get body!//////////////////
+    @Test
     public void testGetSuggestedCommoditiesWithNotExistedCommodity_checkStatus() throws NotExistentCommodity {
         when(baloot.getCommodityById(commodity_ID)).thenThrow(new NotExistentCommodity());
 
