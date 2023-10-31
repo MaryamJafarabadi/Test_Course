@@ -1,4 +1,4 @@
-//check the test for testAddCommodityComment because in it we don't really addComment(a method of baloot)
+//check the test for testAddCommodityComment because in it, we don't really addComment(a method of Baloot)
 //add test for search option not found!  //done
 //parameterized the search options. //done
 package controllers;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -34,10 +34,14 @@ public class CommoditiesControllerTest {
     @Mock
     private Baloot baloot;
 
+    String commodity_ID;
+
     @BeforeEach
     public void setup() {
+        commodity_ID = "1";
         MockitoAnnotations.openMocks(this);
     }
+
 
     @Test ////////////get body!
     public void testGetCommodities_checkStatus() {
@@ -64,9 +68,9 @@ public class CommoditiesControllerTest {
     @Test
     public void testGetCommodity_checkStatus() throws NotExistentCommodity {
         Commodity commodity = new Commodity();
-        when(baloot.getCommodityById("1")).thenReturn(commodity);
+        when(baloot.getCommodityById(commodity_ID)).thenReturn(commodity);
 
-        ResponseEntity<Commodity> response = commoditiesController.getCommodity("1");
+        ResponseEntity<Commodity> response = commoditiesController.getCommodity(commodity_ID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
@@ -74,9 +78,9 @@ public class CommoditiesControllerTest {
     @Test
     public void testGetCommodity_checkValue() throws NotExistentCommodity {
         Commodity commodity = new Commodity();
-        when(baloot.getCommodityById("1")).thenReturn(commodity);
+        when(baloot.getCommodityById(commodity_ID)).thenReturn(commodity);
 
-        ResponseEntity<Commodity> response = commoditiesController.getCommodity("1");
+        ResponseEntity<Commodity> response = commoditiesController.getCommodity(commodity_ID);
 
         assertEquals(200, response.getStatusCodeValue());
     }
@@ -84,38 +88,38 @@ public class CommoditiesControllerTest {
     @Test
     public void testGetCommodity_checkBody() throws NotExistentCommodity {
         Commodity commodity = new Commodity();
-        when(baloot.getCommodityById("1")).thenReturn(commodity);
+        when(baloot.getCommodityById(commodity_ID)).thenReturn(commodity);
 
-        ResponseEntity<Commodity> response = commoditiesController.getCommodity("1");
+        ResponseEntity<Commodity> response = commoditiesController.getCommodity(commodity_ID);
 
         assertEquals(commodity, response.getBody());
     }
 
     @Test
     public void testGetCommodityNotFound_checkStatus() throws NotExistentCommodity {
-        when(baloot.getCommodityById("1")).thenThrow(new NotExistentCommodity());
+        when(baloot.getCommodityById(commodity_ID)).thenThrow(new NotExistentCommodity());
 
-        ResponseEntity<Commodity> response = commoditiesController.getCommodity("1");
+        ResponseEntity<Commodity> response = commoditiesController.getCommodity(commodity_ID);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
     public void testGetCommodityNotFound_checkValue() throws NotExistentCommodity {
-        when(baloot.getCommodityById("1")).thenThrow(new NotExistentCommodity());
+        when(baloot.getCommodityById(commodity_ID)).thenThrow(new NotExistentCommodity());
 
-        ResponseEntity<Commodity> response = commoditiesController.getCommodity("1");
+        ResponseEntity<Commodity> response = commoditiesController.getCommodity(commodity_ID);
 
         assertEquals(404, response.getStatusCodeValue());
     }
 
     @Test
     public void testGetCommodityNotFound_checkBody() throws NotExistentCommodity {
-        when(baloot.getCommodityById("1")).thenThrow(new NotExistentCommodity());
+        when(baloot.getCommodityById(commodity_ID)).thenThrow(new NotExistentCommodity());
 
-        ResponseEntity<Commodity> response = commoditiesController.getCommodity("1");
+        ResponseEntity<Commodity> response = commoditiesController.getCommodity(commodity_ID);
 
-        assertEquals(null, response.getBody());/////////////////////////////////
+        assertNull(response.getBody());//////////////////
     }
 
     @Test
@@ -125,9 +129,9 @@ public class CommoditiesControllerTest {
         input.put("username", "F102M8");
 
         Commodity commodity = new Commodity();
-        when(baloot.getCommodityById("1")).thenReturn(commodity);
+        when(baloot.getCommodityById(commodity_ID)).thenReturn(commodity);
 
-        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+        ResponseEntity<String> response = commoditiesController.rateCommodity(commodity_ID, input);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
@@ -139,9 +143,9 @@ public class CommoditiesControllerTest {
         input.put("username", "F102M8");
 
         Commodity commodity = new Commodity();
-        when(baloot.getCommodityById("1")).thenReturn(commodity);
+        when(baloot.getCommodityById(commodity_ID)).thenReturn(commodity);
 
-        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+        ResponseEntity<String> response = commoditiesController.rateCommodity(commodity_ID, input);
 
         assertEquals(200, response.getStatusCodeValue());
     }
@@ -153,9 +157,9 @@ public class CommoditiesControllerTest {
         input.put("username", "F102M8");
 
         Commodity commodity = new Commodity();
-        when(baloot.getCommodityById("1")).thenReturn(commodity);
+        when(baloot.getCommodityById(commodity_ID)).thenReturn(commodity);
 
-        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+        ResponseEntity<String> response = commoditiesController.rateCommodity(commodity_ID, input);
 
         assertEquals("rate added successfully!", response.getBody());
     }
@@ -166,9 +170,9 @@ public class CommoditiesControllerTest {
         input.put("rate", "5");
         input.put("username", "F102M8");
 
-        when(baloot.getCommodityById("1")).thenThrow(new NotExistentCommodity());
+        when(baloot.getCommodityById(commodity_ID)).thenThrow(new NotExistentCommodity());
 
-        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+        ResponseEntity<String> response = commoditiesController.rateCommodity(commodity_ID, input);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -179,9 +183,9 @@ public class CommoditiesControllerTest {
         input.put("rate", "5");
         input.put("username", "F102M8");
 
-        when(baloot.getCommodityById("1")).thenThrow(new NotExistentCommodity());
+        when(baloot.getCommodityById(commodity_ID)).thenThrow(new NotExistentCommodity());
 
-        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+        ResponseEntity<String> response = commoditiesController.rateCommodity(commodity_ID, input);
 
         assertEquals(404, response.getStatusCodeValue());
     }
@@ -193,20 +197,20 @@ public class CommoditiesControllerTest {
         input.put("rate", "5");
 
 
-        when(baloot.getCommodityById("1")).thenThrow(new NotExistentCommodity());
+        when(baloot.getCommodityById(commodity_ID)).thenThrow(new NotExistentCommodity());
 
-        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+        ResponseEntity<String> response = commoditiesController.rateCommodity(commodity_ID, input);
 
         assertEquals("Commodity does not exist.", response.getBody());
     }
 
-    @Test//check this test because i don't use new Exeption in the code
+    @Test//check this test because I don't use new Exception in the code
     void testRateCommodityIncorrectRange_checkStatus() throws NumberFormatException {
         Map<String, String> input = new HashMap<>();
         input.put("username", "F102M8");
         input.put("rate", "1.5");
 
-        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+        ResponseEntity<String> response = commoditiesController.rateCommodity(commodity_ID, input);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
@@ -217,7 +221,7 @@ public class CommoditiesControllerTest {
         input.put("username", "F102M8");
         input.put("rate", "1.5");
 
-        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+        ResponseEntity<String> response = commoditiesController.rateCommodity(commodity_ID, input);
 
         assertEquals(400, response.getStatusCodeValue());
     }
@@ -228,7 +232,7 @@ public class CommoditiesControllerTest {
         input.put("username", "F102M8");
         input.put("rate", "1.5");
 
-        ResponseEntity<String> response = commoditiesController.rateCommodity("1", input);
+        ResponseEntity<String> response = commoditiesController.rateCommodity(commodity_ID, input);
 
         assertEquals("For input string: \"1.5\"", response.getBody());///??????????????????
     }
@@ -239,10 +243,10 @@ public class CommoditiesControllerTest {
         input.put("username", "F102M8");
         input.put("comment", "Nice!");
 
-        when(baloot.generateCommentId()).thenReturn(1);
+        when(baloot.generateCommentId()).thenReturn(1);/////////////
         when(baloot.getUserById("F102M8")).thenReturn(new model.User());
 
-        ResponseEntity<String> response = commoditiesController.addCommodityComment("1", input);
+        ResponseEntity<String> response = commoditiesController.addCommodityComment(commodity_ID, input);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
@@ -256,7 +260,7 @@ public class CommoditiesControllerTest {
         when(baloot.generateCommentId()).thenReturn(1);
         when(baloot.getUserById("F102M8")).thenReturn(new model.User());
 
-        ResponseEntity<String> response = commoditiesController.addCommodityComment("1", input);
+        ResponseEntity<String> response = commoditiesController.addCommodityComment(commodity_ID, input);
 
         assertEquals(200, response.getStatusCodeValue());
     }
@@ -270,7 +274,7 @@ public class CommoditiesControllerTest {
         when(baloot.generateCommentId()).thenReturn(1);
         when(baloot.getUserById("F102M8")).thenReturn(new model.User());
 
-        ResponseEntity<String> response = commoditiesController.addCommodityComment("1", input);
+        ResponseEntity<String> response = commoditiesController.addCommodityComment(commodity_ID, input);
 
         assertEquals("comment added successfully!", response.getBody());
     }
@@ -282,7 +286,7 @@ public class CommoditiesControllerTest {
         input.put("comment", "Nice!");
 
         when(baloot.getUserById("NotExistedUser")).thenThrow(new NotExistentUser());
-        ResponseEntity<String> response = commoditiesController.addCommodityComment("1", input);
+        ResponseEntity<String> response = commoditiesController.addCommodityComment(commodity_ID, input);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
@@ -293,7 +297,7 @@ public class CommoditiesControllerTest {
         input.put("comment", "Nice!");
 
         when(baloot.getUserById("NotExistedUser")).thenThrow(new NotExistentUser());
-        ResponseEntity<String> response = commoditiesController.addCommodityComment("1", input);
+        ResponseEntity<String> response = commoditiesController.addCommodityComment(commodity_ID, input);
         assertEquals(404, response.getStatusCodeValue());
     }
 
@@ -304,7 +308,7 @@ public class CommoditiesControllerTest {
         input.put("comment", "Nice!");
 
         when(baloot.getUserById("NotExistedUser")).thenThrow(new NotExistentUser());
-        ResponseEntity<String> response = commoditiesController.addCommodityComment("1", input);
+        ResponseEntity<String> response = commoditiesController.addCommodityComment(commodity_ID, input);
         assertEquals("User does not exist.", response.getBody());
     }
 
@@ -313,9 +317,9 @@ public class CommoditiesControllerTest {
         ArrayList<Comment> comments = new ArrayList<>();
         comments.add(new Comment());
 
-        when(baloot.getCommentsForCommodity(1)).thenReturn(comments);
+        when(baloot.getCommentsForCommodity(Integer.parseInt(commodity_ID))).thenReturn(comments);
 
-        ResponseEntity<ArrayList<Comment>> response = commoditiesController.getCommodityComment("1");
+        ResponseEntity<ArrayList<Comment>> response = commoditiesController.getCommodityComment(commodity_ID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
@@ -325,9 +329,9 @@ public class CommoditiesControllerTest {
         ArrayList<Comment> comments = new ArrayList<>();
         comments.add(new Comment());
 
-        when(baloot.getCommentsForCommodity(1)).thenReturn(comments);
+        when(baloot.getCommentsForCommodity(Integer.parseInt(commodity_ID))).thenReturn(comments);
 
-        ResponseEntity<ArrayList<Comment>> response = commoditiesController.getCommodityComment("1");
+        ResponseEntity<ArrayList<Comment>> response = commoditiesController.getCommodityComment(commodity_ID);
 
         assertEquals(200, response.getStatusCodeValue());
     }
@@ -398,10 +402,10 @@ public class CommoditiesControllerTest {
         ArrayList<Commodity> suggestedCommodities = new ArrayList<>();
         suggestedCommodities.add(new Commodity());
 
-        when(baloot.getCommodityById("1")).thenReturn(commodity);
+        when(baloot.getCommodityById(commodity_ID)).thenReturn(commodity);
         when(baloot.suggestSimilarCommodities(commodity)).thenReturn(suggestedCommodities);
 
-        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.getSuggestedCommodities("1");
+        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.getSuggestedCommodities(commodity_ID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
@@ -412,10 +416,10 @@ public class CommoditiesControllerTest {
         ArrayList<Commodity> suggestedCommodities = new ArrayList<>();
         suggestedCommodities.add(new Commodity());
 
-        when(baloot.getCommodityById("1")).thenReturn(commodity);
+        when(baloot.getCommodityById(commodity_ID)).thenReturn(commodity);
         when(baloot.suggestSimilarCommodities(commodity)).thenReturn(suggestedCommodities);
 
-        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.getSuggestedCommodities("1");
+        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.getSuggestedCommodities(commodity_ID);
 
         assertEquals(200, response.getStatusCodeValue());
     }
@@ -423,18 +427,18 @@ public class CommoditiesControllerTest {
 
     @Test //get body!
     public void testGetSuggestedCommoditiesWithNotExistedCommodity_checkStatus() throws NotExistentCommodity {
-        when(baloot.getCommodityById("1")).thenThrow(new NotExistentCommodity());
+        when(baloot.getCommodityById(commodity_ID)).thenThrow(new NotExistentCommodity());
 
-        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.getSuggestedCommodities("1");
+        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.getSuggestedCommodities(commodity_ID);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
     public void testGetSuggestedCommoditiesWithNotExistedCommodity_checkValue() throws NotExistentCommodity {
-        when(baloot.getCommodityById("1")).thenThrow(new NotExistentCommodity());
+        when(baloot.getCommodityById(commodity_ID)).thenThrow(new NotExistentCommodity());
 
-        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.getSuggestedCommodities("1");
+        ResponseEntity<ArrayList<Commodity>> response = commoditiesController.getSuggestedCommodities(commodity_ID);
 
         assertEquals(404, response.getStatusCodeValue());
     }
