@@ -1,14 +1,20 @@
 package domain;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class OrderTest {
+    private Order order;
+    @Before
+    public void setup() {
+        order = new Order();
+    }
+
 
     @Test
     public void testDefaultConstructor() {
-        Order order = new Order();
         assertEquals(0, order.getId());
         assertEquals(0, order.getCustomer());
         assertEquals(0, order.getPrice());
@@ -34,12 +40,10 @@ public class OrderTest {
 
     @Test
     public void testEqualsNotOrderObject() {
-        Order order = new Order();
         assertFalse(order.equals(new Object()));
     }
     @Test
     public void testSetGetId() {
-        Order order = new Order();
         order.setId(1);
         assertEquals(1, order.getId());
     }
@@ -47,7 +51,6 @@ public class OrderTest {
 
     @Test
     public void testSetCustomer() {
-        Order order = new Order();
         order.setCustomer(1);
         assertEquals(1, order.getCustomer());
     }
@@ -55,7 +58,6 @@ public class OrderTest {
 
     @Test
     public void testSetPrice() {
-        Order order = new Order();
         order.setPrice(1);
         assertEquals(1, order.getPrice());
     }
@@ -63,7 +65,6 @@ public class OrderTest {
 
     @Test
     public void testSetQuantity() {
-        Order order = new Order();
         order.setQuantity(1);
         assertEquals(1, order.getQuantity());
     }
