@@ -180,4 +180,44 @@ public class EngineTest {
         assertEquals(1, engine.getCustomerFraudulentQuantity(order2));
     }
 
+
+    @Test
+    public void testAddOrderAndGetFraudulentQuantityOrderAlreadyInHistory() {
+        Order order = new Order();
+        engine.orderHistory.add(order);
+        assertEquals(0, engine.addOrderAndGetFraudulentQuantity(order));
+    }
+
+
+    @Test
+    public void testAddOrderAndGetFraudulentQuantityWithNonZeroFraudulentQuantity() {
+        Order order = new Order();
+        order.setQuantity(1);
+        order.setCustomer(1);
+        order.setId(1);
+        Order order2 = new Order();
+        order2.setQuantity(3);
+        order2.setCustomer(1);
+        order2.setId(2);
+        engine.orderHistory.add(order);
+        assertEquals(2, engine.addOrderAndGetFraudulentQuantity(order2));
+    }
+
+
+    @Test
+    public void testAddOrderAndGetFraudulentQuantityWithZeroFraudulentQuantity() {
+        Order order = new Order();
+        order.setQuantity(1);
+        order.setCustomer(1);
+        order.setId(1);
+        order.setPrice(1);
+        Order order2 = new Order();
+        order2.setQuantity(1);
+        order2.setCustomer(1);
+        order2.setId(2);
+        order2.setPrice(2);
+        engine.orderHistory.add(order);
+        assertEquals(0, engine.addOrderAndGetFraudulentQuantity(order2));
+    }
+
 }
