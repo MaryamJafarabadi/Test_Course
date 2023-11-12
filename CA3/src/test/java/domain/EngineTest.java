@@ -145,5 +145,39 @@ public class EngineTest {
 
         assertEquals(0, engine.getQuantityPatternByPrice(1));
     }*/
+    @Test
+    public void testGetCustomerFraudulentQuantityEqualToAverage() {
+        Order order = new Order();
+        order.setQuantity(1);
+        order.setCustomer(1);
+        engine.orderHistory.add(order);
+        assertEquals(0, engine.getCustomerFraudulentQuantity(order));
+    }
+
+
+    @Test
+    public void testGetCustomerFraudulentQuantityLessThanAverage() {
+        Order order = new Order();
+        order.setQuantity(1);
+        order.setCustomer(1);
+        Order order2 = new Order();
+        order2.setQuantity(3);
+        order2.setCustomer(1);
+        engine.orderHistory.add(order2);
+        engine.orderHistory.add(order);
+        assertEquals(0, engine.getCustomerFraudulentQuantity(order));
+    }
+    @Test
+    public void testGetCustomerFraudulentQuantityMoreThanAverage() {
+        Order order = new Order();
+        order.setQuantity(1);
+        order.setCustomer(1);
+        Order order2 = new Order();
+        order2.setQuantity(3);
+        order2.setCustomer(1);
+        engine.orderHistory.add(order2);
+        engine.orderHistory.add(order);
+        assertEquals(1, engine.getCustomerFraudulentQuantity(order2));
+    }
 
 }
