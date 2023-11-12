@@ -29,31 +29,31 @@ public class Engine {
     }
 
     int getQuantityPatternByPrice(int price) {
-<span class="nc bnc" id="L32" title="All 2 branches missed.">        if (orderHistory.size() == 0) {</span>
-<span class="nc" id="L33">            return 0;</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (orderHistory.size() == 0) {</span>
+<span class="fc" id="L33">            return 0;</span>
         }
 
-<span class="nc" id="L36">        var diff = 0;</span>
-<span class="nc" id="L37">        var previous = orderHistory.get(0);</span>
+<span class="fc" id="L36">        var diff = 0;</span>
+<span class="fc" id="L37">        var previous = orderHistory.get(0);</span>
 
-<span class="nc bnc" id="L39" title="All 2 branches missed.">        for (Order currentOrder : orderHistory) {</span>
-<span class="nc bnc" id="L40" title="All 2 branches missed.">            if (currentOrder.id == previous.id) {</span>
-<span class="nc" id="L41">                continue;</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        for (Order currentOrder : orderHistory) {</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">            if (currentOrder.id == previous.id) {</span>
+<span class="fc" id="L41">                continue;</span>
             }
 
-<span class="nc bnc" id="L44" title="All 2 branches missed.">            if (currentOrder.price != price) {</span>
-<span class="nc" id="L45">                continue;</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            if (currentOrder.price != price) {</span>
+<span class="fc" id="L45">                continue;</span>
             }
 
-<span class="nc bnc" id="L48" title="All 2 branches missed.">            if (diff == 0) {</span>
-<span class="nc" id="L49">                diff = currentOrder.quantity - previous.quantity;</span>
-<span class="nc" id="L50">                previous = currentOrder;</span>
-<span class="nc bnc" id="L51" title="All 2 branches missed.">            } else if (diff != currentOrder.quantity - previous.quantity) {</span>
-<span class="nc" id="L52">                return 0;</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            if (diff == 0) {</span>
+<span class="fc" id="L49">                diff = currentOrder.quantity - previous.quantity;</span>
+<span class="fc" id="L50">                previous = currentOrder;</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            } else if (diff != currentOrder.quantity - previous.quantity) {</span>
+<span class="fc" id="L52">                return 0;</span>
             }
-<span class="nc" id="L54">        }</span>
+<span class="fc" id="L54">        }</span>
 
-<span class="nc" id="L56">        return diff;</span>
+<span class="fc" id="L56">        return diff;</span>
     }
 
     int getCustomerFraudulentQuantity(Order order) {
