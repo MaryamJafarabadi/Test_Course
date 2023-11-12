@@ -219,4 +219,13 @@ public class EngineTest {
         engine.orderHistory.add(order);
         assertEquals(0, engine.addOrderAndGetFraudulentQuantity(order2));
     }
+
+    /*@Test(expected = ArithmeticException.class)
+    public void testGetAverageOrderQuantityByCustomerDivideByZero() {
+        Order order = new Order();
+        order.setCustomer(1);
+        engine.orderHistory.add(order);
+        engine.getAverageOrderQuantityByCustomer(2);
+    }*/
 }
+

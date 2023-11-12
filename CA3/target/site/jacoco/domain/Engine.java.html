@@ -6,79 +6,82 @@ public class Engine {
 
     ArrayList&lt;Order&gt; orderHistory;
 
-<span class="nc" id="L9">    public Engine() {</span>
-<span class="nc" id="L10">        orderHistory = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L11">    }</span>
+<span class="fc" id="L9">    public Engine() {</span>
+<span class="fc" id="L10">        orderHistory = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L11">    }</span>
 
     int getAverageOrderQuantityByCustomer(int customer) {
-<span class="nc" id="L14">        var sum = 0;</span>
-<span class="nc" id="L15">        var count = 0;</span>
+<span class="fc" id="L14">        var sum = 0;</span>
+<span class="fc" id="L15">        var count = 0;</span>
 
-<span class="nc bnc" id="L17" title="All 2 branches missed.">        for (Order oldOrder : orderHistory) {</span>
-<span class="nc bnc" id="L18" title="All 2 branches missed.">            if (oldOrder.customer == customer) {</span>
-<span class="nc" id="L19">                sum += oldOrder.quantity;</span>
-<span class="nc" id="L20">                count++;</span>
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        for (Order oldOrder : orderHistory) {</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">            if (oldOrder.customer == customer) {</span>
+<span class="fc" id="L19">                sum += oldOrder.quantity;</span>
+<span class="fc" id="L20">                count++;</span>
             }
-<span class="nc" id="L22">        }</span>
+<span class="fc" id="L22">        }</span>
 
-<span class="nc bnc" id="L24" title="All 2 branches missed.">        if (orderHistory.size() == 0) {</span>
-<span class="nc" id="L25">            return 0;</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (orderHistory.size() == 0) {</span>
+<span class="fc" id="L25">            return 0;</span>
         }
 
-<span class="nc" id="L28">        return sum / count;</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (count == 0)</span>
+<span class="fc" id="L29">                throw new ArithmeticException(&quot;divide by zero!&quot;);</span>
+
+<span class="fc" id="L31">        return sum / count;</span>
     }
 
     int getQuantityPatternByPrice(int price) {
-<span class="nc bnc" id="L32" title="All 2 branches missed.">        if (orderHistory.size() == 0) {</span>
-<span class="nc" id="L33">            return 0;</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (orderHistory.size() == 0) {</span>
+<span class="fc" id="L36">            return 0;</span>
         }
 
-<span class="nc" id="L36">        var diff = 0;</span>
-<span class="nc" id="L37">        var previous = orderHistory.get(0);</span>
+<span class="fc" id="L39">        var diff = 0;</span>
+<span class="fc" id="L40">        var previous = orderHistory.get(0);</span>
 
-<span class="nc bnc" id="L39" title="All 2 branches missed.">        for (Order currentOrder : orderHistory) {</span>
-<span class="nc bnc" id="L40" title="All 2 branches missed.">            if (currentOrder.id == previous.id) {</span>
-<span class="nc" id="L41">                continue;</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        for (Order currentOrder : orderHistory) {</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">            if (currentOrder.id == previous.id) {</span>
+<span class="fc" id="L44">                continue;</span>
             }
 
-<span class="nc bnc" id="L44" title="All 2 branches missed.">            if (currentOrder.price != price) {</span>
-<span class="nc" id="L45">                continue;</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">            if (currentOrder.price != price) {</span>
+<span class="fc" id="L48">                continue;</span>
             }
 
-<span class="nc bnc" id="L48" title="All 2 branches missed.">            if (diff == 0) {</span>
-<span class="nc" id="L49">                diff = currentOrder.quantity - previous.quantity;</span>
-<span class="nc" id="L50">                previous = currentOrder;</span>
-<span class="nc bnc" id="L51" title="All 2 branches missed.">            } else if (diff != currentOrder.quantity - previous.quantity) {</span>
-<span class="nc" id="L52">                return 0;</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            if (diff == 0) {</span>
+<span class="fc" id="L52">                diff = currentOrder.quantity - previous.quantity;</span>
+<span class="fc" id="L53">                previous = currentOrder;</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">            } else if (diff != currentOrder.quantity - previous.quantity) {</span>
+<span class="fc" id="L55">                return 0;</span>
             }
-<span class="nc" id="L54">        }</span>
+<span class="fc" id="L57">        }</span>
 
-<span class="nc" id="L56">        return diff;</span>
+<span class="fc" id="L59">        return diff;</span>
     }
 
     int getCustomerFraudulentQuantity(Order order) {
 
-<span class="nc" id="L61">        var averageOrderQuantity = getAverageOrderQuantityByCustomer(order.customer);</span>
+<span class="fc" id="L64">        var averageOrderQuantity = getAverageOrderQuantityByCustomer(order.customer);</span>
 
-<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (order.quantity &gt; averageOrderQuantity) {</span>
-<span class="nc" id="L64">            return order.quantity - averageOrderQuantity;</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (order.quantity &gt; averageOrderQuantity) {</span>
+<span class="fc" id="L67">            return order.quantity - averageOrderQuantity;</span>
         }
 
-<span class="nc" id="L67">        return 0;</span>
+<span class="fc" id="L70">        return 0;</span>
     }
 
     public int addOrderAndGetFraudulentQuantity(Order order) {
-<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (orderHistory.contains(order)) {</span>
-<span class="nc" id="L72">            return 0;</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (orderHistory.contains(order)) {</span>
+<span class="fc" id="L75">            return 0;</span>
         }
 
-<span class="nc" id="L75">        var quantity = getCustomerFraudulentQuantity(order);</span>
-<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (quantity == 0) {</span>
-<span class="nc" id="L77">            quantity = getQuantityPatternByPrice(order.price);</span>
+<span class="fc" id="L78">        var quantity = getCustomerFraudulentQuantity(order);</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        if (quantity == 0) {</span>
+<span class="fc" id="L80">            quantity = getQuantityPatternByPrice(order.price);</span>
         }
 
-<span class="nc" id="L80">        orderHistory.add(order);</span>
-<span class="nc" id="L81">        return quantity;</span>
+<span class="fc" id="L83">        orderHistory.add(order);</span>
+<span class="fc" id="L84">        return quantity;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

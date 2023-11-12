@@ -25,6 +25,9 @@ public class Engine {
             return 0;
         }
 
+        /*if (count == 0)
+                throw new ArithmeticException("divide by zero!");*/
+
         return sum / count;
     }
 
