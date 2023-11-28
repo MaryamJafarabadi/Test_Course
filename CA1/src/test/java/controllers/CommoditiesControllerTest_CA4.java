@@ -3,45 +3,29 @@ package controllers;
 
 import application.BalootApplication;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import controllers.CommoditiesController;
-import controllers.UserController;
 import database.Database;
 import exceptions.NotExistentCommodity;
 import exceptions.NotExistentUser;
 import model.Comment;
 import model.Commodity;
 import model.User;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import service.Baloot;
 
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -241,7 +225,6 @@ class CommoditiesControllerTest_CA4 {
                         .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(MockMvcResultMatchers.content().string("rate added successfully!"));
     }
-
 
     @Test
     void testRateCommodityNotExistentCommodity_checkStatus() throws Exception {
@@ -720,5 +703,104 @@ class CommoditiesControllerTest_CA4 {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(commodity.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].categories").value(commodity.getCategories()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].price").value(commodity.getPrice()));
+    }
+
+    @Test
+    void testSearchCommoditiesInvalidSearchOption_checkStatus() throws Exception {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "invalidOption");
+        input.put("searchValue", "value");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(baloot.filterCommoditiesByName("commodityOtherOptions")).thenReturn(new ArrayList<>());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isOk());
+    }
+    @Test
+    void testSearchCommoditiesInvalidSearchOption_checkSize() throws Exception {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "invalidOption");
+        input.put("searchValue", "value");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(baloot.filterCommoditiesByName("commodityOtherOptions")).thenReturn(new ArrayList<>());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(0));
+    }
+    @Test
+    void testSearchCommoditiesInvalidSearchOption_getContent() throws Exception {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "invalidOption");
+        input.put("searchValue", "value");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(baloot.filterCommoditiesByName("commodityOtherOptions")).thenReturn(new ArrayList<>());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(MockMvcResultMatchers.content().string("[]"));
+    }
+
+    @Test
+    void testGetSuggestedCommodities_checkStatus() throws Exception {
+
+
+        String commodityId = "1";
+        Commodity commodity = new Commodity();
+        commodity.setId(commodityId);
+        ArrayList<Commodity> suggestedCommodities = new ArrayList<>();
+        suggestedCommodities.add(commodity);
+        Mockito.when(baloot.getCommodityById(commodityId)).thenReturn(commodity);
+        Mockito.when(baloot.suggestSimilarCommodities(commodity)).thenReturn(suggestedCommodities);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities/{id}/suggested", commodityId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+    @Test
+    void testGetSuggestedCommodities_checkResult() throws Exception {
+        String commodityId = "1";
+        Commodity commodity = new Commodity();
+        commodity.setId(commodityId);
+        ArrayList<Commodity> suggestedCommodities = new ArrayList<>();
+        suggestedCommodities.add(commodity);
+        Mockito.when(baloot.getCommodityById(commodityId)).thenReturn(commodity);
+        Mockito.when(baloot.suggestSimilarCommodities(commodity)).thenReturn(suggestedCommodities);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities/{id}/suggested", commodityId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(suggestedCommodities.size()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(commodityId));
+    }
+    @Test
+    void testGetSuggestedCommoditiesNotFound_checkStatus() throws Exception {
+        String nonExistentCommodityId = "nonExistentCommodityId";
+        Mockito.when(baloot.getCommodityById(nonExistentCommodityId)).thenThrow(new NotExistentCommodity());
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities/{id}/suggested", nonExistentCommodityId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+    @Test
+    void testGetSuggestedCommoditiesNotFound_checkResult() throws Exception {
+        String nonExistentCommodityId = "nonExistentCommodityId";
+        Mockito.when(baloot.getCommodityById(nonExistentCommodityId)).thenThrow(new NotExistentCommodity());
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities/{id}/suggested", nonExistentCommodityId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(0));
     }
 }
