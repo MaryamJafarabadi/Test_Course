@@ -1,221 +1,724 @@
 package controllers;
 
-import  application.BalootApplication;
-import  database.Database;
-import database.DataParser;
 
+import application.BalootApplication;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import controllers.CommoditiesController;
+import controllers.UserController;
+import database.Database;
 import exceptions.NotExistentCommodity;
 import exceptions.NotExistentUser;
-import org.junit.jupiter.api.*;
-
-import  java.util.Map;
-import  java.util.HashMap;
-import  java.util.ArrayList;
-
-import model.*;
-
+import model.Comment;
+import model.Commodity;
+import model.User;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-
-import  org.springframework.boot.test.context.*;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import  org.springframework.http.*;
-import  org.springframework.beans.factory.annotation.Autowired;
-import  org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import service.Baloot;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @AutoConfigureMockMvc
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = BalootApplication.class)
-public class CommoditiesControllerTest_CA4 {
+class CommoditiesControllerTest_CA4 {
     @Autowired
-    private MockMvc mvc;
-    @Autowired
-    private  ObjectMapper objectMapper;
+    private MockMvc mockMvc;
+    @MockBean
+    private Baloot baloot;
 
-    String commodity_ID;
     private void emptyCommodities() {
         Database.getInstance().setCommodities((new ArrayList<>()));
     }
+    @Autowired
+    private CommoditiesController commoditiesController;
+
+
     @BeforeEach
-    public  void setup() throws Exception{
-        emptyCommodities();
-        DataParser dataParser =  new DataParser(Database.getInstance());
-        dataParser.getCommoditiesList();
+    public void setUp()
+    {
+        commoditiesController.setBaloot(baloot);
     }
 
-    // GetCommodities
+    @Test
+    void testGetCommodity_checkStatus() throws Exception {
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+        commodity.setName("commodity_name");
+        commodity.setProviderId("provider_id");
+        commodity.setPrice(1);
+        ArrayList x = new ArrayList();
+        commodity.setCategories(x);
+        commodity.setRating(1);
+        commodity.setInStock(2);
+        commodity.setImage("commodity_image");
+
+        Mockito.when(baloot.getCommodityById("1")).thenReturn(commodity);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+    @Test
+    void testGetCommodity_checkContent() throws Exception {
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+        commodity.setName("commodity_name");
+        commodity.setProviderId("provider_id");
+        commodity.setPrice(1);
+        ArrayList x = new ArrayList();
+        commodity.setCategories(x);
+        commodity.setRating(1);
+        commodity.setInStock(2);
+        commodity.setImage("commodity_image");
+
+        Mockito.when(baloot.getCommodityById("1")).thenReturn(commodity);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities/1"))
+                .andExpect(content().string("{\"id\":\"commodity_id\",\"name\":\"commodity_name\",\"providerId\":\"provider_id\",\"price\":1,\"categories\":[],\"rating\":1.0,\"inStock\":2,\"image\":\"commodity_image\",\"userRate\":{},\"initRate\":0.0}"));
+    }
+    @Test
+    void testGetCommodity_checkFields() throws Exception {
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+        commodity.setName("commodity_name");
+        commodity.setProviderId("provider_id");
+        commodity.setPrice(1);
+        ArrayList x = new ArrayList();
+        commodity.setCategories(x);
+        commodity.setRating(1);
+        commodity.setInStock(2);
+        commodity.setImage("commodity_image");
+
+        Mockito.when(baloot.getCommodityById("1")).thenReturn(commodity);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities/1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(commodity.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(commodity.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.providerId").value(commodity.getProviderId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(commodity.getPrice()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.categories").value(commodity.getCategories()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.rating").value(commodity.getRating()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.inStock").value(commodity.getInStock()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.image").value(commodity.getImage()));
+    }
+
+    @Test
+    public void testGetCommodityNotFound_checkStatus() throws Exception{
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+
+        Mockito.when(baloot.getCommodityById("commodity_id")).thenThrow(new NotExistentCommodity());
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities/commodity_id"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+    @Test
+    public void testGetCommodityNotFound_checkContent() throws Exception{
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+
+
+        Mockito.when(baloot.getCommodityById("commodity_id")).thenThrow(new NotExistentCommodity());
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities/commodity_id"))
+                .andExpect(MockMvcResultMatchers.content().string(""));
+    }
 
     @Test
     public void testGetCommodities_empty_checkStatus() throws Exception {
-        emptyCommodities();
-        mvc.perform(get("/commodities"))
-              .andExpect(status().isOk());
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        when(baloot.getCommodities()).thenReturn(commodities);
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
     @Test
     public void testGetCommodities_empty_checkContent() throws Exception {
-        emptyCommodities();
-       mvc.perform(get("/commodities"))
-               .andExpect(content().string("[]"));
-               //.andDo(print());
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        when(baloot.getCommodities()).thenReturn(commodities);
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities"))
+                .andExpect(MockMvcResultMatchers.content().string("[]"));
     }
 
     @Test
-     public void testGetCommodities_notEmpty_checkStatus() throws Exception{
+    public void testGetCommodities_notEmpty_checkStatus() throws Exception {
+        ArrayList<Commodity> commodities = new ArrayList<>();
 
+
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+        commodity.setName("commodity_name");
+        commodity.setProviderId("provider_id");
+        commodity.setPrice(1);
+        ArrayList x = new ArrayList();
+        commodity.setCategories(x);
+        commodity.setRating(1);
+        commodity.setInStock(2);
+        commodity.setImage("commodity_image");
+
+
+        commodities.add(commodity);
+        when(baloot.getCommodities()).thenReturn(commodities);
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
     @Test
-     public void testGetCommodities_notEmpty_checkContent() throws Exception{
-
-    }
-
-    // GetCommodity:
-    @Test
-    public void testGetCommodity_checkStatus() throws NotExistentCommodity {
-
-    }
-
-    @Test
-    public void testGetCommodity_checkContent() throws NotExistentCommodity {
-
-    }
-
-    @Test
-    public void testGetCommodityNotFound_checkStatus() throws NotExistentCommodity {
-
-    }
-
-    @Test
-    public void testGetCommodityNotFound_checkContent() throws NotExistentCommodity {
-
-    }
-
-    @Test
-    public void testRateCommodity_checkStatus() throws NotExistentCommodity {
-
-    }
-
-    @Test
-    public void testRateCommodity_checkContent() throws NotExistentCommodity {
-
-    }
+    public void testGetCommodities_notEmpty_checkContent() throws Exception {
+        ArrayList<Commodity> commodities = new ArrayList<>();
 
 
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+        commodity.setName("commodity_name");
+        commodity.setProviderId("provider_id");
+        commodity.setPrice(1);
+        ArrayList x = new ArrayList();
+        commodity.setCategories(x);
+        commodity.setRating(1);
+        commodity.setInStock(2);
+        commodity.setImage("commodity_image");
 
-    @Test
-    void testRateCommodityNotExistentCommodity_checkStatus() throws NotExistentCommodity {
 
+        commodities.add(commodity);
+        when(baloot.getCommodities()).thenReturn(commodities);
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities"))
+                .andExpect(MockMvcResultMatchers.content().string("[{\"id\":\"commodity_id\",\"name\":\"commodity_name\",\"providerId\":\"provider_id\",\"price\":1,\"categories\":[],\"rating\":1.0,\"inStock\":2,\"image\":\"commodity_image\",\"userRate\":{},\"initRate\":0.0}]"));
     }
 
     @Test
-    void testRateCommodityNotExistentCommodity_checkContent() throws NotExistentCommodity {
+    void testRateCommodity_checkStatus() throws Exception {
+        Mockito.when(baloot.getCommodityById("1")).thenReturn(new Commodity(/* provide necessary details */));
 
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("username", "testUser");
+        requestBody.put("rate", "5");
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/1/rate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
-
-
-
-    @ParameterizedTest
-    @CsvSource({
-            "F102M8, 11",
-            "F102M8, -2"
-    })
-    void testRateCommodityIncorrectRange_checkStatus(String username, String rate) throws NumberFormatException,NotExistentCommodity {
-
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-            "F102M8, 11",
-            "F102M8, -2"
-    })
-    void testRateCommodityIncorrectRange_checkContent(String username, String rate) throws NumberFormatException,NotExistentCommodity {
-
-    }
-
-
-
     @Test
-    public void testAddCommodityComment_checkStatus() throws NotExistentUser {
+    void testRateCommodity_checkContent() throws Exception {
 
+        Mockito.when(baloot.getCommodityById("1")).thenReturn(new Commodity(/* provide necessary details */));
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("username", "testUser");
+        requestBody.put("rate", "5");
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/1/rate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(MockMvcResultMatchers.content().string("rate added successfully!"));
     }
 
 
     @Test
-    public void testAddCommodityComment_checkContent() throws NotExistentUser {
-
-    }
-
-
-    @Test
-    public void testAddCommodityCommentUserNotFound_checkStatus() throws NotExistentUser{
-
-    }
-
-    @Test
-    public void testAddCommodityCommentUserNotFound_checkContent() throws NotExistentUser{
-
-    }
+    void testRateCommodityNotExistentCommodity_checkStatus() throws Exception {
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("rate", "3");
+        requestBody.put("username", "testUser");
+        ObjectMapper objectMapper = new ObjectMapper();
 
 
-    @Test
-    public void testGetCommodityComment_checkStatus() {
+        Mockito.when(baloot.getCommodityById("1")).thenThrow(new NotExistentCommodity());
 
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/1/rate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
     @Test
-    public void testGetCommodityComment_checkContent() {
+    void testRateCommodityNotExistentCommodity_checkContent() throws Exception {
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("rate", "3");
+        requestBody.put("username", "testUser");
+        ObjectMapper objectMapper = new ObjectMapper();
 
-    }
 
-    @ParameterizedTest
-    @ValueSource(strings = { "name", "category", "provider" })
-    public void testSearchCommodities_checkStatus(String searchOption) {
+        Mockito.when(baloot.getCommodityById("1")).thenThrow(new NotExistentCommodity());
 
-    }
-    @ParameterizedTest
-    @ValueSource(strings = { "name", "category", "provider" })
-    public void testSearchCommodities_checkContent(String searchOption) {
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/1/rate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(MockMvcResultMatchers.content().string("Commodity does not exist."));
     }
 
     @Test
-    public void testSearchCommoditiesByOtherOptions_checkStatus() {
+    void testRateCommodityInvalidRate_checkStatus() throws Exception {
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("rate", "invalidRate");
+        requestBody.put("username", "testUser");
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/1/rate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+    @Test
+    void testRateCommodityInvalidRate_checkContent() throws Exception {
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("rate", "invalidRate");
+        requestBody.put("username", "testUser");
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/1/rate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().string("For input string: \"invalidRate\""));
+    }
+
+    @Test
+    void testAddCommodityCommentSuccess_checkStatus() throws Exception {
+        String commodityId = "1";
+        String username = "testUser";
+        String commentText = "test comment";
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Mockito.when(baloot.getUserById(username))
+                .thenReturn(new User(username, "password", "email", "2001-12-01", "Test Address"));
+
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("username", username);
+        requestBody.put("comment", commentText);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/{id}/comment", commodityId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+    @Test
+    void testAddCommodityCommentSuccess_checkContent() throws Exception {
+        String commodityId = "1";
+        String username = "testUser";
+        String commentText = "test comment";
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        Mockito.when(baloot.getUserById(username))
+                .thenReturn(new User(username, "password", "email", "2001-12-01", "Test Address"));
+
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("username", username);
+        requestBody.put("comment", commentText);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/{id}/comment", commodityId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(content().string("comment added successfully!"));
+    }
+
+    @Test
+    void testAddCommodityCommentUserNotFound_checkStatus() throws Exception {
+        String commodityId = "1";
+        String username = "nonexistentUser";
+        String commentText = "test comment";
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        Mockito.when(baloot.getUserById(username)).thenThrow(new NotExistentUser());
+
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("username", username);
+        requestBody.put("comment", commentText);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/{id}/comment", commodityId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+    @Test
+    void testAddCommodityCommentUserNotFound_checkContent() throws Exception {
+        String commodityId = "1";
+        String username = "nonexistentUser";
+        String commentText = "test comment";
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        Mockito.when(baloot.getUserById(username)).thenThrow(new NotExistentUser());
+
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("username", username);
+        requestBody.put("comment", commentText);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/{id}/comment", commodityId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(content().string("User does not exist."));
+    }
+
+    @Test
+    void testGetCommodityComment_checkStatus() throws Exception {
+        String commodityId = "1";
+        ArrayList<Comment> comments = new ArrayList<>();
+        Comment comment = new Comment(1, "email","username", 2, "text");
+        comment.setDate("date");
+        comments.add(comment);
+
+        Mockito.when(baloot.getCommentsForCommodity(Integer.parseInt(commodityId)))
+                .thenReturn(comments);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities/{id}/comment", commodityId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        //because of date we can't test the content.
+
 
     }
     @Test
-    public void testSearchCommoditiesByOtherOptions_checkContent() {
+    void testGetCommodityComment_checkSize() throws Exception {
+        String commodityId = "1";
+        ArrayList<Comment> comments = new ArrayList<>();
+        Comment comment = new Comment(1, "email","username", 2, "text");
+        comment.setDate("date");
+        comments.add(comment);
 
+        Mockito.when(baloot.getCommentsForCommodity(Integer.parseInt(commodityId)))
+                .thenReturn(comments);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/commodities/{id}/comment", commodityId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(1));
+        //because of date we can't test the content.
+
+
+    }
+    @Test
+    void testSearchCommoditiesByName_checkStatus() throws Exception {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "name");
+        input.put("searchValue", "commodity_name");
+
+
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+        commodity.setName("commodity_name");
+        commodity.setPrice(1);
+
+
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        commodities.add(commodity);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        Mockito.when(baloot.filterCommoditiesByName("commodity_name"))
+                .thenReturn(commodities);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isOk());
     }
 
     @Test
-    public void testGetSuggestedCommodities_checkStatus() throws NotExistentCommodity {
+    void testSearchCommoditiesByName_checkContent() throws Exception {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "name");
+        input.put("searchValue", "commodity_name");
 
+
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+        commodity.setName("commodity_name");
+        commodity.setPrice(1);
+
+
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        commodities.add(commodity);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        Mockito.when(baloot.filterCommoditiesByName("commodity_name"))
+                .thenReturn(commodities);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(MockMvcResultMatchers.content().string("[{\"id\":\"commodity_id\",\"name\":\"commodity_name\",\"providerId\":null,\"price\":1,\"categories\":[],\"rating\":0.0,\"inStock\":0,\"image\":null,\"userRate\":{},\"initRate\":0.0}]"));
+    }
+
+    @Test
+    void testSearchCommoditiesByName_checkField() throws Exception {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "name");
+        input.put("searchValue", "commodity_name");
+
+
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+        commodity.setName("commodity_name");
+        commodity.setPrice(1);
+
+
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        commodities.add(commodity);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        Mockito.when(baloot.filterCommoditiesByName("commodity_name"))
+                .thenReturn(commodities);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(commodity.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(commodity.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].price").value(commodity.getPrice()));
+    }
+
+    @Test
+    void testSearchCommoditiesByProvider_checkStatus() throws Exception {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "provider");
+        input.put("searchValue", "commodity_provider");
+
+
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+        commodity.setProviderId("commodity_provider");
+        commodity.setPrice(1);
+
+
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        commodities.add(commodity);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        Mockito.when(baloot.filterCommoditiesByProviderName("commodity_provider"))
+                .thenReturn(commodities);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isOk());
     }
     @Test
-    public void testGetSuggestedCommodities_checkContent() throws NotExistentCommodity {
+    void testSearchCommoditiesByProvider_checkContent() throws Exception {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "provider");
+        input.put("searchValue", "commodity_provider");
 
+
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+        commodity.setProviderId("commodity_provider");
+        commodity.setPrice(1);
+
+
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        commodities.add(commodity);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        Mockito.when(baloot.filterCommoditiesByProviderName("commodity_provider"))
+                .thenReturn(commodities);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(MockMvcResultMatchers.content().string("[{\"id\":\"commodity_id\",\"name\":null,\"providerId\":\"commodity_provider\",\"price\":1,\"categories\":[],\"rating\":0.0,\"inStock\":0,\"image\":null,\"userRate\":{},\"initRate\":0.0}]"));
     }
 
     @Test
-    public void testGetSuggestedCommoditiesWithNotExistedCommodity_checkStatus() throws NotExistentCommodity {
+    void testSearchCommoditiesByProvider_checkFields() throws Exception {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "provider");
+        input.put("searchValue", "commodity_provider");
 
+
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+        commodity.setProviderId("commodity_provider");
+        commodity.setPrice(1);
+
+
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        commodities.add(commodity);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        Mockito.when(baloot.filterCommoditiesByProviderName("commodity_provider"))
+                .thenReturn(commodities);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(commodity.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].providerId").value(commodity.getProviderId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].price").value(commodity.getPrice()));
     }
+
     @Test
-    public void testGetSuggestedCommoditiesWithNotExistedCommodity_checkContent() throws NotExistentCommodity {
+    void testSearchCommoditiesByCategory_checkStatus() throws Exception {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "category");
+        input.put("searchValue", "commodity_category");
 
+
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+        ArrayList<String> categories = new ArrayList();
+        categories.add("commodity_category");
+        commodity.setCategories(categories);
+        commodity.setPrice(1);
+
+
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        commodities.add(commodity);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        Mockito.when(baloot.filterCommoditiesByCategory("commodity_category"))
+                .thenReturn(commodities);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isOk());
     }
 
+    @Test
+    void testSearchCommoditiesByCategory_getContent() throws Exception {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "category");
+        input.put("searchValue", "commodity_category");
+
+
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+        ArrayList<String> categories = new ArrayList();
+        categories.add("commodity_category");
+        commodity.setCategories(categories);
+        commodity.setPrice(1);
+
+
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        commodities.add(commodity);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        Mockito.when(baloot.filterCommoditiesByCategory("commodity_category"))
+                .thenReturn(commodities);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(MockMvcResultMatchers.content().string("[{\"id\":\"commodity_id\",\"name\":null,\"providerId\":null,\"price\":1,\"categories\":[\"commodity_category\"],\"rating\":0.0,\"inStock\":0,\"image\":null,\"userRate\":{},\"initRate\":0.0}]"));
+    }
+
+    @Test
+    void testSearchCommoditiesByCategory_checkFields() throws Exception {
+        Map<String, String> input = new HashMap<>();
+        input.put("searchOption", "category");
+        input.put("searchValue", "commodity_category");
+
+
+        Commodity commodity = new Commodity();
+        commodity.setId("commodity_id");
+        ArrayList<String> categories = new ArrayList();
+        categories.add("commodity_category");
+        commodity.setCategories(categories);
+        commodity.setPrice(1);
+
+
+        ArrayList<Commodity> commodities = new ArrayList<>();
+        commodities.add(commodity);
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+        Mockito.when(baloot.filterCommoditiesByCategory("commodity_category"))
+                .thenReturn(commodities);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/commodities/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(commodity.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].categories").value(commodity.getCategories()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].price").value(commodity.getPrice()));
+    }
 }
