@@ -46,35 +46,67 @@ class UserControllerTest_CA4{
     {
         userController.setBaloot(baloot);
     }
-
+    private String asJsonString(Object object) {
+        try {
+            return new ObjectMapper().writeValueAsString(object);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     @Test
-    void testGetUserSuccess() throws Exception {
+    void testGetUserSuccess_checkStatus() throws Exception {
         User user = new User("username", "password", "email", "birthDate", "address");
         when(baloot.getUserById(anyString())).thenReturn(user);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/{id}", "username"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("username"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.password").value("password"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("email"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.birthDate").value("birthDate"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.address").value("address"))
-                .andExpect(content().string("{\"username\":\"username\",\"password\":\"password\",\"email\":\"email\",\"birthDate\":\"birthDate\",\"address\":\"address\",\"credit\":0.0,\"commoditiesRates\":{},\"buyList\":{},\"purchasedList\":{}}"))
-                .andExpect(status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/{id}", "username")
+                    .contentType(MediaType.APPLICATION_JSON))
+                 .andExpect(status().isOk());
+    }
+    @Test
+    void testGetUserSuccess_checkContent() throws Exception {
+        User user = new User("username", "password", "email", "birthDate", "address");
+        when(baloot.getUserById(anyString())).thenReturn(user);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/{id}", "username")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string("{\"username\":\"username\",\"password\":\"password\",\"email\":\"email\",\"birthDate\":\"birthDate\",\"address\":\"address\",\"credit\":0.0,\"commoditiesRates\":{},\"buyList\":{},\"purchasedList\":{}}"));
+
+    }
+    @Test
+    void testGetUserSuccess_checkFields() throws Exception {
+        User user = new User("username", "password", "email", "birthDate", "address");
+        when(baloot.getUserById(anyString())).thenReturn(user);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/{id}", "username")
+                    .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(user.getUsername()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.password").value(user.getPassword()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(user.getEmail()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.birthDate").value(user.getBirthDate()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.address").value(user.getAddress()));
     }
 
     @Test
-    void testGetUserNotFound() throws Exception {
+    void testGetUserNotFound_checkStatus() throws Exception {
         String userId = "nonExistentUserId";
         when(baloot.getUserById(userId)).thenThrow(new NotExistentUser());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users/{id}", userId)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(""))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+    @Test
+    void testGetUserNotFound_checkContent() throws Exception {
+        String userId = "nonExistentUserId";
+        when(baloot.getUserById(userId)).thenThrow(new NotExistentUser());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/{id}", userId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(""));
     }
 
     @Test
-    void testAddCreditSuccess() throws Exception {
+    void testAddCreditSuccess_checkStatus() throws Exception {
         String userId = "testUserId";
         float creditToAdd = 100;
 
@@ -86,12 +118,25 @@ class UserControllerTest_CA4{
         mockMvc.perform(MockMvcRequestBuilders.post("/users/{id}/credit", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(requestBody)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+    @Test
+    void testAddCreditSuccess_checkContent() throws Exception {
+        String userId = "testUserId";
+        float creditToAdd = 100;
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("credit", String.valueOf(creditToAdd));
+
+        when(baloot.getUserById(anyString())).thenReturn(new User(userId, "password", "email", "birthDate", "address"));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/{id}/credit", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(requestBody)))
                 .andExpect(MockMvcResultMatchers.content().string("credit added successfully!"));
     }
-
     @Test
-    void testAddCreditInvalidCreditRange() throws Exception {
+    void testAddCreditInvalidCreditRange_checkStatus() throws Exception {
         String userId = "testUserId";
         float creditToAdd = -50.0f;
 
@@ -103,12 +148,26 @@ class UserControllerTest_CA4{
         mockMvc.perform(MockMvcRequestBuilders.post("/users/{id}/credit", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(requestBody)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+    @Test
+    void testAddCreditInvalidCreditRange_checkContent() throws Exception {
+        String userId = "testUserId";
+        float creditToAdd = -50.0f;
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("credit", String.valueOf(creditToAdd));
+
+        when(baloot.getUserById(anyString())).thenReturn(new User(userId, "password", "email", "birthDate", "address"));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/{id}/credit", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(requestBody)))
                 .andExpect(MockMvcResultMatchers.content().string("Credit value must be a positive float"));
     }
 
     @Test
-    void testAddCreditNotExistentUser() throws Exception {
+    void testAddCreditNotExistentUser_checkStatus() throws Exception {
         String userId = "nonExistentUserId";
         float creditToAdd = 100.0f;
 
@@ -120,26 +179,48 @@ class UserControllerTest_CA4{
         mockMvc.perform(MockMvcRequestBuilders.post("/users/{id}/credit", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(requestBody)))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+    @Test
+    void testAddCreditNotExistentUser_checkContent() throws Exception {
+        String userId = "nonExistentUserId";
+        float creditToAdd = 100.0f;
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("credit", String.valueOf(creditToAdd));
+
+        when(baloot.getUserById(anyString())).thenThrow(new NotExistentUser());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/{id}/credit", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(requestBody)))
                 .andExpect(MockMvcResultMatchers.content().string("User does not exist."));
     }
 
 
     @Test
-    void testAddCreditInvalidJsonFormat() throws Exception {
+    void testAddCreditInvalidJsonFormat_checkStatus() throws Exception {
         String userId = "testUserId";
         String invalidJson = "{invalidJson}";
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users/{id}/credit", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(invalidJson))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+    @Test
+    void testAddCreditInvalidJsonFormat_checkContent() throws Exception {
+        String userId = "testUserId";
+        String invalidJson = "{invalidJson}";
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/{id}/credit", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidJson))
                 .andExpect(MockMvcResultMatchers.content().string(""));
     }
 
-
     @Test
-    void testAddCreditInvalidCreditFormat() throws Exception {
+    void testAddCreditInvalidCreditFormat_checkStatus() throws Exception {
         String userId = "testUserId";
         String invalidCredit = "invalidCredit";
 
@@ -151,29 +232,22 @@ class UserControllerTest_CA4{
         mockMvc.perform(MockMvcRequestBuilders.post("/users/{id}/credit", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(requestBody)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+    @Test
+    void testAddCreditInvalidCreditFormat_checkContent() throws Exception {
+        String userId = "testUserId";
+        String invalidCredit = "invalidCredit";
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("credit", invalidCredit);
+
+        when(baloot.getUserById(anyString())).thenReturn(new User(userId, "password", "email", "birthDate", "address"));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/{id}/credit", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(requestBody)))
                 .andExpect(MockMvcResultMatchers.content().string("Please enter a valid number for the credit amount."));
     }
-
-    // Helper method to convert object to JSON string
-    private String asJsonString(Object object) {
-        try {
-            return new ObjectMapper().writeValueAsString(object);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    /*@Test
-    void testGetUserSuccess() throws Exception {
-        String userId = "someUserId";
-        User user = new User();
-        user.setUsername(userId);
-        Mockito.when(baloot.getUserById(userId)).thenReturn(user);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/{id}", userId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(userId));
-    }*/
 
 }
