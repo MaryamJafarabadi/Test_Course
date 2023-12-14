@@ -21,8 +21,6 @@ jobs:
         cache: maven
     - name: Build
       run: mvn -B package --file ./CA1/pom.xml
-    - name: Build_4
-      run: mvn -B package --file ./CA1/src/test/java/controllers/UserControllerTest_CA4.java
     - name: Test
       run: mvn -B test --file ./CA1/pom.xml
     - name: Test_4
