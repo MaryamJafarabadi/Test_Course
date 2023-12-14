@@ -30,7 +30,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 //@WebMvcTest(UserController.class)
 @AutoConfigureMockMvc
 @SpringBootTest(classes = BalootApplication.class)
-class UserControllerTest_CA4{
+class UserControllerTest{
 
     @Autowired
     private MockMvc mockMvc;
