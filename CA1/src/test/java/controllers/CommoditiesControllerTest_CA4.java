@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest(classes = BalootApplication.class)
-class CommoditiesControllerTest_CA4 {
+class CA4_CommoditiesControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
