@@ -162,7 +162,7 @@ class CommoditiesControllerTest_CA4 {
         commodity.setName("commodity_name");
         commodity.setProviderId("provider_id");
         commodity.setPrice(1);
-        ArrayList x = new ArrayList();
+        ArrayList<String> x = new ArrayList<String>();
         commodity.setCategories(x);
         commodity.setRating(1);
         commodity.setInStock(2);
@@ -182,7 +182,7 @@ class CommoditiesControllerTest_CA4 {
         commodity.setName("commodity_name");
         commodity.setProviderId("provider_id");
         commodity.setPrice(1);
-        ArrayList x = new ArrayList();
+        ArrayList<String> x = new ArrayList<String>();
         commodity.setCategories(x);
         commodity.setRating(1);
         commodity.setInStock(2);
@@ -454,7 +454,7 @@ class CommoditiesControllerTest_CA4 {
         commodity.setId("commodity_id");
         commodity.setProviderId("commodity_provider");
         commodity.setPrice(1);
-        ArrayList<Commodity> commodities = new ArrayList<>();
+        ArrayList<Commodity> commodities = new ArrayList<Commodity>();
         commodities.add(commodity);
 
         Mockito.when(baloot.filterCommoditiesByProviderName("commodity_provider"))
@@ -474,7 +474,7 @@ class CommoditiesControllerTest_CA4 {
         commodity.setId("commodity_id");
         commodity.setProviderId("commodity_provider");
         commodity.setPrice(1);
-        ArrayList<Commodity> commodities = new ArrayList<>();
+        ArrayList<Commodity> commodities = new ArrayList<Commodity>();
         commodities.add(commodity);
 
         Mockito.when(baloot.filterCommoditiesByProviderName("commodity_provider"))
@@ -496,7 +496,7 @@ class CommoditiesControllerTest_CA4 {
         commodity.setProviderId("commodity_provider");
         commodity.setPrice(1);
 
-        ArrayList<Commodity> commodities = new ArrayList<>();
+        ArrayList<Commodity> commodities = new ArrayList<Commodity>();
         commodities.add(commodity);
 
         Mockito.when(baloot.filterCommoditiesByProviderName("commodity_provider"))
@@ -519,12 +519,12 @@ class CommoditiesControllerTest_CA4 {
 
         Commodity commodity = new Commodity();
         commodity.setId("commodity_id");
-        ArrayList<String> categories = new ArrayList();
+        ArrayList<String> categories = new ArrayList<String>();
         categories.add("commodity_category");
         commodity.setCategories(categories);
         commodity.setPrice(1);
 
-        ArrayList<Commodity> commodities = new ArrayList<>();
+        ArrayList<Commodity> commodities = new ArrayList<Commodity>();
         commodities.add(commodity);
 
         Mockito.when(baloot.filterCommoditiesByCategory("commodity_category"))
@@ -544,12 +544,12 @@ class CommoditiesControllerTest_CA4 {
 
         Commodity commodity = new Commodity();
         commodity.setId("commodity_id");
-        ArrayList<String> categories = new ArrayList();
+        ArrayList<String> categories = new ArrayList<String>();
         categories.add("commodity_category");
         commodity.setCategories(categories);
         commodity.setPrice(1);
 
-        ArrayList<Commodity> commodities = new ArrayList<>();
+        ArrayList<Commodity> commodities = new ArrayList<Commodity>();
         commodities.add(commodity);
 
         Mockito.when(baloot.filterCommoditiesByCategory("commodity_category"))
@@ -567,12 +567,12 @@ class CommoditiesControllerTest_CA4 {
         input.put("searchValue", "commodity_category");
         Commodity commodity = new Commodity();
         commodity.setId("commodity_id");
-        ArrayList<String> categories = new ArrayList();
+        ArrayList<String> categories = new ArrayList<String>();
         categories.add("commodity_category");
         commodity.setCategories(categories);
         commodity.setPrice(1);
 
-        ArrayList<Commodity> commodities = new ArrayList<>();
+        ArrayList<Commodity> commodities = new ArrayList<Commodity>();
         commodities.add(commodity);
 
         Mockito.when(baloot.filterCommoditiesByCategory("commodity_category"))
