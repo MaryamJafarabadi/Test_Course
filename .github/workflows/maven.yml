@@ -21,8 +21,8 @@ jobs:
         cache: maven
     - name: Build
       run: mvn -B package --file ./CA1/pom.xml
-  #  - name: Test
-  #    run: mvn -B test --file pom.xml
+    - name: Test
+      run: mvn -B test --file ./CA1/pom.xml
   #  - name: Mutation Coverage
   #    run: mvn test-compile org.pitest:pitest-maven:mutationCoverage --file pom.xml
    # - uses: actions/upload-artifact@v3
