@@ -61,7 +61,7 @@ class CommoditiesControllerTest_CA4 {
         commodity.setName("commodity_name");
         commodity.setProviderId("provider_id");
         commodity.setPrice(1);
-        ArrayList x = new ArrayList();
+        ArrayList<String> x = new ArrayList<String>();
         commodity.setCategories(x);
         commodity.setRating(1);
         commodity.setInStock(2);
@@ -79,7 +79,7 @@ class CommoditiesControllerTest_CA4 {
         commodity.setName("commodity_name");
         commodity.setProviderId("provider_id");
         commodity.setPrice(1);
-        ArrayList x = new ArrayList();
+        ArrayList<String> x = new ArrayList<String>();
         commodity.setCategories(x);
         commodity.setRating(1);
         commodity.setInStock(2);
@@ -97,7 +97,7 @@ class CommoditiesControllerTest_CA4 {
         commodity.setName("commodity_name");
         commodity.setProviderId("provider_id");
         commodity.setPrice(1);
-        ArrayList x = new ArrayList();
+        ArrayList<String> x = new ArrayList<String>();
         commodity.setCategories(x);
         commodity.setRating(1);
         commodity.setInStock(2);
@@ -137,7 +137,7 @@ class CommoditiesControllerTest_CA4 {
 
     @Test
     public void testGetCommodities_empty_checkStatus() throws Exception {
-        ArrayList<Commodity> commodities = new ArrayList<>();
+        ArrayList<Commodity> commodities = new ArrayList<Commodity>();
 
         when(baloot.getCommodities()).thenReturn(commodities);
 
@@ -146,7 +146,7 @@ class CommoditiesControllerTest_CA4 {
     }
     @Test
     public void testGetCommodities_empty_checkContent() throws Exception {
-        ArrayList<Commodity> commodities = new ArrayList<>();
+        ArrayList<Commodity> commodities = new ArrayList<Commodity>();
 
         when(baloot.getCommodities()).thenReturn(commodities);
 
@@ -156,7 +156,7 @@ class CommoditiesControllerTest_CA4 {
 
     @Test
     public void testGetCommodities_notEmpty_checkStatus() throws Exception {
-        ArrayList<Commodity> commodities = new ArrayList<>();
+        ArrayList<Commodity> commodities = new ArrayList<Commodity>();
         Commodity commodity = new Commodity();
         commodity.setId("commodity_id");
         commodity.setName("commodity_name");
@@ -176,7 +176,7 @@ class CommoditiesControllerTest_CA4 {
     }
     @Test
     public void testGetCommodities_notEmpty_checkContent() throws Exception {
-        ArrayList<Commodity> commodities = new ArrayList<>();
+        ArrayList<Commodity> commodities = new ArrayList<Commodity>();
         Commodity commodity = new Commodity();
         commodity.setId("commodity_id");
         commodity.setName("commodity_name");
@@ -197,7 +197,7 @@ class CommoditiesControllerTest_CA4 {
 
     @Test
     void testRateCommodity_checkStatus() throws Exception {
-        Map<String, String> requestBody = new HashMap<>();
+        Map<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("username", "testUser");
         requestBody.put("rate", "5");
 
@@ -210,7 +210,7 @@ class CommoditiesControllerTest_CA4 {
     }
     @Test
     void testRateCommodity_checkContent() throws Exception {
-        Map<String, String> requestBody = new HashMap<>();
+        Map<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("username", "testUser");
         requestBody.put("rate", "5");
 
@@ -224,7 +224,7 @@ class CommoditiesControllerTest_CA4 {
 
     @Test
     void testRateCommodityNotExistentCommodity_checkStatus() throws Exception {
-        Map<String, String> requestBody = new HashMap<>();
+        Map<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("rate", "3");
         requestBody.put("username", "testUser");
 
@@ -237,7 +237,7 @@ class CommoditiesControllerTest_CA4 {
     }
     @Test
     void testRateCommodityNotExistentCommodity_checkContent() throws Exception {
-        Map<String, String> requestBody = new HashMap<>();
+        Map<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("rate", "3");
         requestBody.put("username", "testUser");
 
@@ -252,7 +252,7 @@ class CommoditiesControllerTest_CA4 {
     @Test
     void testRateCommodityInvalidRate_checkStatus() throws Exception {
 
-        Map<String, String> requestBody = new HashMap<>();
+        Map<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("rate", "invalidRate");
         requestBody.put("username", "testUser");
 
@@ -263,7 +263,7 @@ class CommoditiesControllerTest_CA4 {
     }
     @Test
     void testRateCommodityInvalidRate_checkContent() throws Exception {
-        Map<String, String> requestBody = new HashMap<>();
+        Map<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("rate", "invalidRate");
         requestBody.put("username", "testUser");
 
@@ -283,7 +283,7 @@ class CommoditiesControllerTest_CA4 {
         Mockito.when(baloot.getUserById(username))
                 .thenReturn(new User(username, "password", "email", "2001-12-01", "Test Address"));
 
-        Map<String, String> requestBody = new HashMap<>();
+        Map<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("username", username);
         requestBody.put("comment", commentText);
 
@@ -301,7 +301,7 @@ class CommoditiesControllerTest_CA4 {
         Mockito.when(baloot.getUserById(username))
                 .thenReturn(new User(username, "password", "email", "2001-12-01", "Test Address"));
 
-        Map<String, String> requestBody = new HashMap<>();
+        Map<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("username", username);
         requestBody.put("comment", commentText);
 
@@ -320,7 +320,7 @@ class CommoditiesControllerTest_CA4 {
 
         Mockito.when(baloot.getUserById(username)).thenThrow(new NotExistentUser());
 
-        Map<String, String> requestBody = new HashMap<>();
+        Map<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("username", username);
         requestBody.put("comment", commentText);
 
@@ -337,7 +337,7 @@ class CommoditiesControllerTest_CA4 {
 
         Mockito.when(baloot.getUserById(username)).thenThrow(new NotExistentUser());
 
-        Map<String, String> requestBody = new HashMap<>();
+        Map<String, String> requestBody = new HashMap<String, String>();
         requestBody.put("username", username);
         requestBody.put("comment", commentText);
 
@@ -349,7 +349,7 @@ class CommoditiesControllerTest_CA4 {
     @Test
     void testGetCommodityComment_checkStatus() throws Exception {
         String commodityId = "1";
-        ArrayList<Comment> comments = new ArrayList<>();
+        ArrayList<Comment> comments = new ArrayList<Comment>();
         Comment comment = new Comment(1, "email","username", 2, "text");
         comment.setDate("date");
         comments.add(comment);
@@ -365,7 +365,7 @@ class CommoditiesControllerTest_CA4 {
     @Test
     void testGetCommodityComment_checkSize() throws Exception {
         String commodityId = "1";
-        ArrayList<Comment> comments = new ArrayList<>();
+        ArrayList<Comment> comments = new ArrayList<Comment>();
         Comment comment = new Comment(1, "email","username", 2, "text");
         comment.setDate("date");
         comments.add(comment);
@@ -380,7 +380,7 @@ class CommoditiesControllerTest_CA4 {
     }
     @Test
     void testSearchCommoditiesByName_checkStatus() throws Exception {
-        Map<String, String> input = new HashMap<>();
+        Map<String, String> input = new HashMap<String, String>();
         input.put("searchOption", "name");
         input.put("searchValue", "commodity_name");
         Commodity commodity = new Commodity();
@@ -401,7 +401,7 @@ class CommoditiesControllerTest_CA4 {
 
     @Test
     void testSearchCommoditiesByName_checkContent() throws Exception {
-        Map<String, String> input = new HashMap<>();
+        Map<String, String> input = new HashMap<String, String>();
         input.put("searchOption", "name");
         input.put("searchValue", "commodity_name");
         Commodity commodity = new Commodity();
@@ -422,7 +422,7 @@ class CommoditiesControllerTest_CA4 {
 
     @Test
     void testSearchCommoditiesByName_checkField() throws Exception {
-        Map<String, String> input = new HashMap<>();
+        Map<String, String> input = new HashMap<String, String>();
         input.put("searchOption", "name");
         input.put("searchValue", "commodity_name");
         Commodity commodity = new Commodity();
@@ -447,7 +447,7 @@ class CommoditiesControllerTest_CA4 {
 
     @Test
     void testSearchCommoditiesByProvider_checkStatus() throws Exception {
-        Map<String, String> input = new HashMap<>();
+        Map<String, String> input = new HashMap<String, String>();
         input.put("searchOption", "provider");
         input.put("searchValue", "commodity_provider");
         Commodity commodity = new Commodity();
@@ -467,7 +467,7 @@ class CommoditiesControllerTest_CA4 {
     }
     @Test
     void testSearchCommoditiesByProvider_checkContent() throws Exception {
-        Map<String, String> input = new HashMap<>();
+        Map<String, String> input = new HashMap<String, String>();
         input.put("searchOption", "provider");
         input.put("searchValue", "commodity_provider");
         Commodity commodity = new Commodity();
@@ -487,7 +487,7 @@ class CommoditiesControllerTest_CA4 {
     }
     @Test
     void testSearchCommoditiesByProvider_checkFields() throws Exception {
-        Map<String, String> input = new HashMap<>();
+        Map<String, String> input = new HashMap<String, String>();
         input.put("searchOption", "provider");
         input.put("searchValue", "commodity_provider");
 
@@ -513,7 +513,7 @@ class CommoditiesControllerTest_CA4 {
     }
     @Test
     void testSearchCommoditiesByCategory_checkStatus() throws Exception {
-        Map<String, String> input = new HashMap<>();
+        Map<String, String> input = new HashMap<String, String>();
         input.put("searchOption", "category");
         input.put("searchValue", "commodity_category");
 
@@ -538,7 +538,7 @@ class CommoditiesControllerTest_CA4 {
 
     @Test
     void testSearchCommoditiesByCategory_getContent() throws Exception {
-        Map<String, String> input = new HashMap<>();
+        Map<String, String> input = new HashMap<String, String>();
         input.put("searchOption", "category");
         input.put("searchValue", "commodity_category");
 
@@ -562,7 +562,7 @@ class CommoditiesControllerTest_CA4 {
     }
     @Test
     void testSearchCommoditiesByCategory_checkFields() throws Exception {
-        Map<String, String> input = new HashMap<>();
+        Map<String, String> input = new HashMap<String, String>();
         input.put("searchOption", "category");
         input.put("searchValue", "commodity_category");
         Commodity commodity = new Commodity();
@@ -590,7 +590,7 @@ class CommoditiesControllerTest_CA4 {
 
     @Test
     void testSearchCommoditiesInvalidSearchOption_checkStatus() throws Exception {
-        Map<String, String> input = new HashMap<>();
+        Map<String, String> input = new HashMap<String, String>();
         input.put("searchOption", "invalidOption");
         input.put("searchValue", "value");
 
@@ -603,7 +603,7 @@ class CommoditiesControllerTest_CA4 {
     }
     @Test
     void testSearchCommoditiesInvalidSearchOption_checkSize() throws Exception {
-        Map<String, String> input = new HashMap<>();
+        Map<String, String> input = new HashMap<String, String>();
         input.put("searchOption", "invalidOption");
         input.put("searchValue", "value");
 
@@ -616,7 +616,7 @@ class CommoditiesControllerTest_CA4 {
     }
     @Test
     void testSearchCommoditiesInvalidSearchOption_getContent() throws Exception {
-        Map<String, String> input = new HashMap<>();
+        Map<String, String> input = new HashMap<String, String>();
         input.put("searchOption", "invalidOption");
         input.put("searchValue", "value");
 
@@ -633,7 +633,7 @@ class CommoditiesControllerTest_CA4 {
         String commodityId = "1";
         Commodity commodity = new Commodity();
         commodity.setId(commodityId);
-        ArrayList<Commodity> suggestedCommodities = new ArrayList<>();
+        ArrayList<Commodity> suggestedCommodities = new ArrayList<Commodity>();
         suggestedCommodities.add(commodity);
 
         Mockito.when(baloot.getCommodityById(commodityId)).thenReturn(commodity);
@@ -648,7 +648,7 @@ class CommoditiesControllerTest_CA4 {
         String commodityId = "1";
         Commodity commodity = new Commodity();
         commodity.setId(commodityId);
-        ArrayList<Commodity> suggestedCommodities = new ArrayList<>();
+        ArrayList<Commodity> suggestedCommodities = new ArrayList<Commodity>();
         suggestedCommodities.add(commodity);
 
         Mockito.when(baloot.getCommodityById(commodityId)).thenReturn(commodity);
