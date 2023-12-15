@@ -5,11 +5,13 @@
     <groupId>Baloot</groupId>
     <artifactId>CA3</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <properties>
-        <java.version>19</java.version>
-        <maven.compiler.source>19</maven.compiler.source>
-        <maven.compiler.target>19</maven.compiler.target>
-    </properties>
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -46,6 +48,24 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.15.3</version>
+
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>16</source>
+                    <target>16</target>
+                </configuration>
+            </plugin>
+
         </plugins>
+
     </build>
 </project>
