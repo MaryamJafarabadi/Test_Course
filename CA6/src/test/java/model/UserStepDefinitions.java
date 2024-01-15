@@ -5,6 +5,7 @@ import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import exceptions.InvalidCreditRange;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UserStepDefinitions {
     private User user;
@@ -25,5 +26,16 @@ public class UserStepDefinitions {
     @Then("the user's credit should be {float}")
     public void theUserCreditShouldBe(float expectedCredit) {
         assertEquals(expectedCredit, user.getCredit(), 0.001);
+    }
+
+    @When("an attempt is made to add credit of {float}")
+    public void theUserAddsCreditInvalidRange(float amount) {
+        Throwable exception = assertThrows(InvalidCreditRange.class, () -> user.addCredit(amount));
+        assertEquals("Credit value must be a positive float", exception.getMessage());
+    }
+
+    @Then("an InvalidCreditRange exception should be thrown")
+    public void nothing(){
+
     }
 }
