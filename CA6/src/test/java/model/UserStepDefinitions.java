@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.InsufficientCredit;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
@@ -36,6 +37,27 @@ public class UserStepDefinitions {
 
     @Then("an InvalidCreditRange exception should be thrown")
     public void nothing(){
+
+    }
+
+    @When("the user withdraws {float} credit")
+    public void theUserWithdrawsCredit(float amount) throws InsufficientCredit {
+        user.withdrawCredit(amount);
+    }
+
+    @Then("the user should have a remained credit of {float}")
+    public void theUserShouldHaveATotalCreditOf(float expectedCredit) {
+        assertEquals(expectedCredit, user.getCredit());
+    }
+
+    @When("the user withdraws more than it's credit like {float}")
+    public void theUserWithdrawsCreditInsufficient(float amount) {
+        Throwable exception = assertThrows(InsufficientCredit.class, () -> user.withdrawCredit(amount));
+        assertEquals("Credit is insufficient.", exception.getMessage());
+    }
+
+    @Then("an InsufficientCredit exception should be thrown")
+    public void nothing2(){
 
     }
 }
