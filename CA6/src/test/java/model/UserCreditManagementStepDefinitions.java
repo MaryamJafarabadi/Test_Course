@@ -8,7 +8,7 @@ import exceptions.InvalidCreditRange;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class UserStepDefinitions {
+public class UserCreditManagementStepDefinitions {
     private User user;
     private float initialCredit;
 
