@@ -1,11 +1,9 @@
 package model;
 
 import exceptions.CommodityIsNotInBuyList;
-import exceptions.InsufficientCredit;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
-import exceptions.InvalidCreditRange;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 public class UserBuyListManagementStepDefinitions {

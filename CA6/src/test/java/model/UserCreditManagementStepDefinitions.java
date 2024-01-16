@@ -36,7 +36,7 @@ public class UserCreditManagementStepDefinitions {
     }
 
     @Then("an InvalidCreditRange exception should be thrown")
-    public void nothing(){
+    public void validateInvalidCreditRangeException(){
 
     }
 
@@ -57,7 +57,7 @@ public class UserCreditManagementStepDefinitions {
     }
 
     @Then("an InsufficientCredit exception should be thrown")
-    public void nothing2(){
+    public void validateInsufficientCreditException(){
 
     }
 }
