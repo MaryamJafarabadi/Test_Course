@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
+
 @Setter
 @NoArgsConstructor
 public class User {
@@ -55,6 +56,7 @@ public class User {
         } else
             this.buyList.put(id, 1);
     }
+
 
     public void addPurchasedItem(String id, int quantity) {
         if (this.purchasedList.containsKey(id)) {
